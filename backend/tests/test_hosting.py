@@ -40,6 +40,7 @@ def test_hosted_app_access_origin_and_device_gateway(tmp_path, monkeypatch):
     ) as client:
         assert client.get("/api/v1/health").status_code == 200
         assert 'action="/auth/login"' in client.get("/").text
+        assert client.get("/").headers["referrer-policy"] == "same-origin"
         for path in ["/bundle.js", "/api/v1/storage", "/api/v1/ai/status"]:
             denied = client.get(path)
             assert denied.status_code == 401

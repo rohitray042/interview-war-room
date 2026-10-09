@@ -56,7 +56,7 @@ def login_page(failed=False):
         headers={
             "Cache-Control": "no-store",
             "X-Frame-Options": "DENY",
-            "Referrer-Policy": "no-referrer",
+            "Referrer-Policy": "same-origin",
             "Content-Security-Policy": (
                 "default-src 'none'; style-src 'unsafe-inline'; "
                 "form-action 'self'; frame-ancestors 'none'"
