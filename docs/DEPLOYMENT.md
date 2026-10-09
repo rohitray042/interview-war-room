@@ -36,8 +36,10 @@ and reuse it instead of repeating initialization.
 4. Enter your configured `GEMINI_MODEL` and `GEMINI_API_KEY` in Render's environment
    fields. The `.env` file on your laptop is not deployed. Do not put the key in GitHub.
 5. Deploy and wait for **Live**. Open the service's assigned HTTPS URL on your phone.
-6. The browser asks for credentials: username **warroom**, password is the generated
-   `WAR_ROOM_ACCESS_PASSWORD` in the service's Environment settings. Keep it private.
+6. The root URL shows a login page. Enter the generated `WAR_ROOM_ACCESS_PASSWORD`
+   from the service's Environment settings. Login lasts 24 hours in a secure,
+   HttpOnly cookie. Keep the password private. Basic authentication with username
+   **warroom** remains supported for API clients.
 
 Render provides `RENDER_EXTERNAL_URL`; the app uses it to allow the correct hostname
 and origin. For another host, set `WAR_ROOM_PUBLIC_URL=https://your-hostname` and

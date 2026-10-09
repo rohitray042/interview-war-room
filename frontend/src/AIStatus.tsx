@@ -3,19 +3,13 @@ import { request } from "./api";
 
 export default function AIStatus() {
   const [status, setStatus] = useState("unavailable");
-  const [metadata, setMetadata] = useState("");
   useEffect(() => {
     let active = true;
     const refresh = () =>
-      request<{ status: string; provider?: string; model?: string }>(
-        "/ai/status",
-      )
+      request<{ status: string }>("/ai/status")
         .then((data) => {
           if (active) {
             setStatus(data.status);
-            setMetadata(
-              [data.provider, data.model].filter(Boolean).join(" · "),
-            );
           }
         })
         .catch(() => {
@@ -28,20 +22,14 @@ export default function AIStatus() {
       window.clearInterval(timer);
     };
   }, []);
-  const labels: Record<string, string> = {
-    connected: "AI Connected",
-    disabled: "AI Disabled",
-    mock: "AI Mock",
-    unverified: "AI Unverified",
-    unavailable: "AI Unavailable",
-  };
+  const connected = status === "connected" || status === "unverified";
   return (
     <span
-      title="Status reflects the last provider response. Configure AI in backend environment variables."
-      style={{ fontSize: 12 }}
+      className={`ai-status ${connected ? "connected" : "disconnected"}`}
+      aria-live="polite"
     >
-      {labels[status] || labels.unavailable}
-      {metadata && <small style={{ display: "block" }}>{metadata}</small>}
+      <i aria-hidden="true" />
+      {connected ? "AI Connected" : "AI Disconnected"}
     </span>
   );
 }

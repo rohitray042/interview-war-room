@@ -185,11 +185,14 @@ button:hover:not(:disabled) {
   flex-shrink: 0;
 }
 main {
+  min-width: 0;
   margin-left: 228px;
   width: calc(100% - 228px);
 }
 header {
-  height: 72px;
+  min-height: 72px;
+  gap: 16px;
+  flex-wrap: wrap;
   border-bottom: 1px solid var(--border);
   background: var(--surface);
   padding: 0 40px;
@@ -198,6 +201,8 @@ header {
   align-items: center;
 }
 .breadcrumbs {
+  min-width: 0;
+  flex-wrap: wrap;
   display: flex;
   gap: 12px;
   font-size: 11px;
@@ -208,9 +213,38 @@ header {
   color: var(--text);
 }
 .header-actions {
+  min-width: 0;
+  margin-left: auto;
   display: flex;
   align-items: center;
   gap: 21px;
+}
+.ai-status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  max-width: 240px;
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.ai-status i {
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #c43b36;
+}
+.ai-status.connected i {
+  background: #278345;
+}
+.content :is(h1, h2, h3, p, label, button) {
+  overflow-wrap: anywhere;
+}
+.content :is(input, textarea, select) {
+  min-width: 0;
+  max-width: 100%;
 }
 .connection {
   display: flex;
@@ -229,6 +263,7 @@ header {
   background: #b86452;
 }
 .icon-button {
+  flex-shrink: 0;
   width: 30px;
   height: 30px;
   display: grid;
@@ -704,6 +739,9 @@ label small {
   }
 }
 @media (max-width: 800px) {
+  .shell > main > header {
+    padding-block: 12px;
+  }
   .sidebar {
     width: 65px;
     padding: 26px 8px 0;
@@ -778,8 +816,8 @@ label small {
     gap: 2px;
   }
   .sidebar button {
-    width: 34px;
-    height: 34px;
+    width: 40px;
+    height: 44px;
   }
   .sidebar .nav-bottom {
     margin: 0 0 0 2px;
@@ -793,14 +831,30 @@ label small {
     width: 100%;
   }
   header {
-    height: 53px;
     padding: 0 17px;
   }
+  .shell > main > header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
   .header-actions {
-    gap: 9px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 100px) 44px;
+    gap: 12px;
+    width: 100%;
+    margin: 0;
+  }
+  .header-actions .icon-button {
+    width: 44px;
+    height: 44px;
   }
   .connection {
-    font-size: 8px;
+    font-size: 10px;
+    line-height: 1.5;
+  }
+  .connection i {
+    flex-shrink: 0;
   }
   .breadcrumbs {
     font-size: 10px;
@@ -830,7 +884,7 @@ label small {
     min-height: 215px;
   }
   .art-row {
-    width: 280px;
+    width: min(100%, 280px);
   }
   .art-row b {
     font-size: 9px;
@@ -877,8 +931,38 @@ label small {
     display: block;
   }
   footer {
+    flex-wrap: wrap;
     font-size: 8px;
     gap: 12px;
+  }
+}
+@media (max-width: 560px) {
+  .content :is(input, select, textarea):not([type="checkbox"]) {
+    font-size: 16px;
+  }
+  .content :is(button, select) {
+    min-height: 44px;
+  }
+  .form-footer,
+  .bank-listbar,
+  .bank-rowfoot,
+  .bank-detail-actions,
+  .interview-history-row {
+    flex-wrap: wrap;
+  }
+  .interview-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .bank-check input {
+    flex-shrink: 0;
+  }
+}
+@media (max-width: 360px) {
+  .sidebar {
+    padding-inline: 6px;
+  }
+  .sidebar nav {
+    gap: 0;
   }
 }
 .device-privacy {

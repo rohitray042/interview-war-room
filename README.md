@@ -26,6 +26,18 @@ Mock interviews now include persistent sessions, answer evaluation, bounded foll
 
 ## Mock interview workflow
 
+**AI generated** now writes fresh primary questions when **Start interview** is pressed.
+Select category, difficulty and question type; Question Bank uploads and a target JD
+are not required for general practice. An optional confirmed target comparison supplies
+source-verified JD context. Questions are stored directly in the interview session, not
+added to the Question Bank. The requested primary set is generated once at the start and
+asked one question at a time. Refresh resumes the saved set rather than generating it again.
+
+After each answer, AI evaluates its evidence and can select a weak topic for up to two
+follow-ups. Follow-up wording uses the existing versioned templates. Primary questions
+are not dynamically regenerated after each answer; this remains a text interview, without
+voice processing. Failed/invalid generation creates no partial session or fake questions.
+
 1. Open **Mock interview**, choose a type, optional confirmed resume/JD comparison, category, difficulty, question count and source.
 2. Create and start the session. The interview screen shows the current question. The browser-owned backup contains the full session and rubrics; this is a practice tool, not a secure exam.
 3. Submit a text answer. Browser storage commits it before evaluation starts. Retrying submission cannot create a second answer.

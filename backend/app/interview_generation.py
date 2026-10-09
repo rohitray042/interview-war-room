@@ -128,12 +128,26 @@ async def generate_interview(provider, db, payload, policy):
     schema["properties"]["questions"].update(
         minItems=payload.number_of_questions, maxItems=payload.number_of_questions
     )
+    context_text = json.dumps(
+        {
+            "mode": "live_interview_v1",
+            "count": payload.number_of_questions,
+            "interview_type": payload.interview_type,
+            "difficulty": payload.difficulty,
+            "allowed_types": types,
+            "contexts": contexts,
+            "history": history,
+        }
+    )
+    if len(context_text) > 180000:
+        raise ValueError("Generation context exceeds its bounded size")
     result = await asyncio.wait_for(
         provider.generate_structured(
             LLMRequest(
                 task="question_generation",
                 instructions=(
-                    "Act as an interviewer. Create exactly count fresh, distinct primary questions. "
+                    "Act as an interviewer. Create exactly count fresh, "
+                    "distinct primary questions. "
                     "No existing question bank is provided or required. Respect interview_type, "
                     "allowed types and difficulty. Use a supplied context_id for each question; "
                     "copy its category/skill exactly. Vary scenarios; do not repeat history. "
@@ -148,17 +162,7 @@ async def generate_interview(provider, db, payload, policy):
                     "do not imply candidate experience. Do not include answers in question_text. "
                     "Return only structured JSON."
                 ),
-                context=json.dumps(
-                    {
-                        "mode": "live_interview_v1",
-                        "count": payload.number_of_questions,
-                        "interview_type": payload.interview_type,
-                        "difficulty": payload.difficulty,
-                        "allowed_types": types,
-                        "contexts": contexts,
-                        "history": history,
-                    }
-                ),
+                context=context_text,
                 output_schema=schema,
             )
         ),

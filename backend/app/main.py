@@ -1,13 +1,15 @@
+import hmac
 import logging
 from contextlib import asynccontextmanager
 from typing import Annotated, Literal
+from urllib.parse import parse_qs
 
 from alembic import command
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 from pydantic import Field as ValidatedField
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
@@ -28,7 +30,15 @@ from app.device_storage import (
     device_engine,
     process_operation,
 )
-from app.hosting import authorized, hosting_origins, mount_frontend
+from app.hosting import (
+    COOKIE,
+    authorized,
+    hosting_origins,
+    login_page,
+    mount_frontend,
+    session_token,
+    valid_session,
+)
 from app.interview_api import router as interview_router
 from app.interview_content import InterviewContent
 from app.learning_api import router as learning_router
@@ -119,11 +129,39 @@ def create_app(
     @app.middleware("http")
     async def local_requests(request: Request, call_next):
         gateway = request.url.path == "/api/v1/device"
+        password = settings.access_password.get_secret_value()
+        if request.url.path == "/auth/login" and request.method == "POST":
+            if request.headers.get("origin") not in origins:
+                return JSONResponse(status_code=403, content={"detail": "Invalid login origin."})
+            body = b""
+            async for chunk in request.stream():
+                body += chunk
+                if len(body) > 4096:
+                    return JSONResponse(
+                        status_code=413, content={"detail": "Login request too large."}
+                    )
+            supplied = parse_qs(body.decode("utf-8", errors="replace")).get("password", [""])[0]
+            if not password or not hmac.compare_digest(supplied.encode(), password.encode()):
+                return login_page(failed=True)
+            response = RedirectResponse("/", status_code=303)
+            response.set_cookie(
+                COOKIE,
+                session_token(password),
+                max_age=86400,
+                httponly=True,
+                secure=bool(settings.public_url),
+                samesite="strict",
+                path="/",
+            )
+            response.headers["Cache-Control"] = "no-store"
+            return response
         if device_engine.get() is None and request.url.path != "/api/v1/health":
             if not authorized(
                 request.headers.get("authorization", ""),
                 settings.access_password.get_secret_value(),
-            ):
+            ) and not valid_session(request.cookies.get(COOKIE), password):
+                if request.method == "GET" and request.url.path == "/":
+                    return login_page()
                 return JSONResponse(
                     status_code=401,
                     content={"detail": "Enter your workspace access password."},
