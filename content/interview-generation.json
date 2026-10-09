@@ -1,0 +1,5 @@
+{
+  "version": 1,
+  "categories": ["SQL", "Python", "Apache Spark", "PySpark", "Snowflake", "Kafka", "Airflow", "dbt", "AWS", "Azure", "GCP", "BigQuery", "Databricks", "CI/CD", "DevOps", "GenAI", "Agentic AI", "Data Modeling", "Data Engineering", "System Design", "Behavioral"],
+  "primary_types": ["conceptual", "coding", "debugging", "scenario", "system_design", "behavioral", "project_based"]
+}

@@ -1,0 +1,7 @@
+{
+  "id": "snowflake-query-v1", "version": 1, "topic": "Snowflake",
+  "difficulty": "Hard", "type": "Scenario",
+  "prompt": "A Snowflake query becomes slower without a SQL change. What evidence would you gather before resizing the warehouse?",
+  "rubric_id": "technical-v1",
+  "expected_concepts": ["Query profile and history", "Queueing versus execution time", "Data volume and pruning", "Spilling and concurrency", "Measured cost-performance trade-offs"]
+}

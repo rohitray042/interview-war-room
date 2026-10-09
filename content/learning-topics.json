@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "Apache Spark": ["Spark", "Apache Spark"],
+    "Kafka": ["Apache Kafka", "Kafka"]
+  },
+  "topics": [
+    {"skill": "Apache Spark", "topic": "Data skew", "aliases": ["Data skew", "Spark data skew", "Handling data skew"]},
+    {"skill": "Kafka", "topic": "Consumer group rebalancing", "aliases": ["Rebalances", "Rebalancing", "Consumer group rebalancing", "Kafka consumer group rebalancing"]}
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "id": "spark-shuffle-v1", "version": 1, "topic": "Apache Spark",
+  "difficulty": "Medium", "type": "Conceptual",
+  "prompt": "What causes a shuffle in Spark, and how would you investigate its impact on a slow job?",
+  "rubric_id": "technical-v1",
+  "expected_concepts": ["Data redistribution across partitions", "Network and disk costs", "Stage boundaries and Spark UI metrics", "Evidence before optimization"]
+}

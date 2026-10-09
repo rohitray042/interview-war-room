@@ -1,0 +1,760 @@
+{
+  "version": 1,
+  "questions": [
+    {
+      "id": "sql-window",
+      "version": 1,
+      "question_text": "Given events(event_id, updated_at, ingestion_id), write a query that retains one latest event. How should null timestamps and ties be handled?",
+      "category": "SQL",
+      "subcategory": "Window functions",
+      "skill": "SQL",
+      "difficulty": "medium",
+      "question_type": "coding",
+      "tags": [
+        "window functions",
+        "sql"
+      ],
+      "expected_topics": [
+        "ROW_NUMBER",
+        "Partition keys",
+        "Deterministic ordering",
+        "Null handling"
+      ],
+      "evaluation_focus": "Correctness under ties and duplicate arrivals"
+    },
+    {
+      "id": "sql-joins",
+      "version": 1,
+      "question_text": "How do INNER JOIN and LEFT JOIN differ when keys are null or duplicated? Show a small counterexample to an incorrect row-count assumption.",
+      "category": "SQL",
+      "subcategory": "Joins",
+      "skill": "SQL",
+      "difficulty": "easy",
+      "question_type": "conceptual",
+      "tags": [
+        "joins",
+        "sql"
+      ],
+      "expected_topics": [
+        "Null semantics",
+        "Join multiplicity",
+        "Filtering after joins"
+      ],
+      "evaluation_focus": "Ability to reason about actual output rows"
+    },
+    {
+      "id": "sql-plan",
+      "version": 1,
+      "question_text": "A query reads far more rows than it returns. How would the execution plan guide investigation before adding indexes or rewriting SQL?",
+      "category": "SQL",
+      "subcategory": "Query plans",
+      "skill": "SQL",
+      "difficulty": "hard",
+      "question_type": "debugging",
+      "tags": [
+        "query plans",
+        "sql"
+      ],
+      "expected_topics": [
+        "Cardinality estimates",
+        "Predicate pushdown",
+        "Join strategy",
+        "Measured comparison"
+      ],
+      "evaluation_focus": "Evidence-driven diagnosis rather than blanket tuning"
+    },
+    {
+      "id": "python-stream",
+      "version": 1,
+      "question_text": "How would a Python program aggregate a file larger than available memory while handling malformed records?",
+      "category": "Python",
+      "subcategory": "Memory",
+      "skill": "Python",
+      "difficulty": "medium",
+      "question_type": "coding",
+      "tags": [
+        "memory",
+        "python"
+      ],
+      "expected_topics": [
+        "Iterators",
+        "Bounded memory",
+        "Error isolation",
+        "Incremental aggregation"
+      ],
+      "evaluation_focus": "Correct streaming behavior and explicit error policy"
+    },
+    {
+      "id": "python-tests",
+      "version": 1,
+      "question_text": "What tests would establish that a timestamp-normalization function handles nulls, time zones and daylight-saving transitions correctly?",
+      "category": "Python",
+      "subcategory": "Testing",
+      "skill": "Python",
+      "difficulty": "easy",
+      "question_type": "conceptual",
+      "tags": [
+        "testing",
+        "python"
+      ],
+      "expected_topics": [
+        "Boundary cases",
+        "Time zone awareness",
+        "Parameterized tests"
+      ],
+      "evaluation_focus": "Precise contracts and representative test cases"
+    },
+    {
+      "id": "python-retry",
+      "version": 1,
+      "question_text": "A Python ingestion worker times out after a destination write. Design retries that do not duplicate records.",
+      "category": "Python",
+      "subcategory": "Reliability",
+      "skill": "Python",
+      "difficulty": "hard",
+      "question_type": "scenario",
+      "tags": [
+        "reliability",
+        "python"
+      ],
+      "expected_topics": [
+        "Idempotency keys",
+        "Ambiguous outcomes",
+        "Backoff",
+        "Atomic writes"
+      ],
+      "evaluation_focus": "Handling partial success without data corruption"
+    },
+    {
+      "id": "pyspark-basics",
+      "version": 1,
+      "question_text": "What is the difference between a transformation and an action in PySpark, and when does a DataFrame plan execute?",
+      "category": "PySpark",
+      "subcategory": "DataFrames",
+      "skill": "PySpark",
+      "difficulty": "easy",
+      "question_type": "conceptual",
+      "tags": [
+        "dataframes",
+        "pyspark"
+      ],
+      "expected_topics": [
+        "Lazy evaluation",
+        "Logical plan",
+        "Actions",
+        "Transformations"
+      ],
+      "evaluation_focus": "Correct execution model"
+    },
+    {
+      "id": "pyspark-java",
+      "version": 1,
+      "question_text": "Plan a hypothetical migration from Java Spark jobs to PySpark. What correctness, serialization and deployment risks should be tested?",
+      "category": "PySpark",
+      "subcategory": "Migration",
+      "skill": "PySpark",
+      "difficulty": "medium",
+      "question_type": "scenario",
+      "tags": [
+        "migration",
+        "pyspark"
+      ],
+      "expected_topics": [
+        "DataFrame semantics",
+        "Schema parity",
+        "Python worker overhead",
+        "Regression datasets"
+      ],
+      "evaluation_focus": "Language-boundary trade-offs without assuming prior PySpark experience"
+    },
+    {
+      "id": "pyspark-udf",
+      "version": 1,
+      "question_text": "A PySpark job spends most of its time in a Python UDF. How would alternatives be evaluated without changing null or type semantics?",
+      "category": "PySpark",
+      "subcategory": "Optimization",
+      "skill": "PySpark",
+      "difficulty": "hard",
+      "question_type": "debugging",
+      "tags": [
+        "optimization",
+        "pyspark"
+      ],
+      "expected_topics": [
+        "Built-in expressions",
+        "Serialization",
+        "Vectorized execution",
+        "Null semantics"
+      ],
+      "evaluation_focus": "Measurement and semantic equivalence"
+    },
+    {
+      "id": "spark-shuffle",
+      "version": 1,
+      "question_text": "What causes a Spark shuffle, and which stage metrics distinguish network costs, skew and excessive spilling?",
+      "category": "Apache Spark",
+      "subcategory": "Execution",
+      "skill": "Apache Spark",
+      "difficulty": "medium",
+      "question_type": "conceptual",
+      "tags": [
+        "execution",
+        "apache spark"
+      ],
+      "expected_topics": [
+        "Stage boundaries",
+        "Shuffle bytes",
+        "Task distribution",
+        "Spill metrics"
+      ],
+      "evaluation_focus": "Interpreting execution evidence"
+    },
+    {
+      "id": "spark-skew",
+      "version": 1,
+      "question_text": "One Spark join task runs much longer than the others. How would the skew hypothesis be tested and possible mitigations compared?",
+      "category": "Apache Spark",
+      "subcategory": "Skew",
+      "skill": "Apache Spark",
+      "difficulty": "hard",
+      "question_type": "debugging",
+      "tags": [
+        "skew",
+        "apache spark"
+      ],
+      "expected_topics": [
+        "Key distribution",
+        "Task metrics",
+        "Salting",
+        "Adaptive execution"
+      ],
+      "evaluation_focus": "Diagnosis and trade-offs rather than arbitrary partition counts"
+    },
+    {
+      "id": "spark-checkpoint",
+      "version": 1,
+      "question_text": "Design a recovery test for a streaming job that fails after writing output but before checkpoint completion.",
+      "category": "Apache Spark",
+      "subcategory": "Streaming",
+      "skill": "Apache Spark",
+      "difficulty": "hard",
+      "question_type": "scenario",
+      "tags": [
+        "streaming",
+        "apache spark"
+      ],
+      "expected_topics": [
+        "Checkpoint recovery",
+        "Sink idempotency",
+        "Replay",
+        "End-to-end semantics"
+      ],
+      "evaluation_focus": "Understanding boundaries of delivery guarantees"
+    },
+    {
+      "id": "snow-partition",
+      "version": 1,
+      "question_text": "How does Snowflake micro-partitioning affect query performance, and when might clustering improve pruning?",
+      "category": "Snowflake",
+      "subcategory": "Storage",
+      "skill": "Snowflake",
+      "difficulty": "medium",
+      "question_type": "conceptual",
+      "tags": [
+        "storage",
+        "snowflake"
+      ],
+      "expected_topics": [
+        "Micro-partitions",
+        "Metadata",
+        "Pruning",
+        "Clustering costs"
+      ],
+      "evaluation_focus": "Storage architecture and measurable query optimization"
+    },
+    {
+      "id": "snow-profile",
+      "version": 1,
+      "question_text": "A Snowflake query slows down with unchanged SQL. What evidence should be gathered before resizing its warehouse?",
+      "category": "Snowflake",
+      "subcategory": "Query performance",
+      "skill": "Snowflake",
+      "difficulty": "hard",
+      "question_type": "debugging",
+      "tags": [
+        "query performance",
+        "snowflake"
+      ],
+      "expected_topics": [
+        "Query profile",
+        "Queue time",
+        "Spilling",
+        "Pruning",
+        "Concurrency"
+      ],
+      "evaluation_focus": "Distinguishing resource contention from plan or data changes"
+    },
+    {
+      "id": "snow-stream",
+      "version": 1,
+      "question_text": "Design a hypothetical incremental Snowflake pipeline using streams and tasks. How would retries, empty changes and updates be handled?",
+      "category": "Snowflake",
+      "subcategory": "Incremental processing",
+      "skill": "Snowflake",
+      "difficulty": "medium",
+      "question_type": "scenario",
+      "tags": [
+        "incremental processing",
+        "snowflake"
+      ],
+      "expected_topics": [
+        "Change tracking",
+        "Transactional consumption",
+        "MERGE",
+        "Task dependencies"
+      ],
+      "evaluation_focus": "Correct incremental processing and recovery"
+    },
+    {
+      "id": "snow-cost",
+      "version": 1,
+      "question_text": "How would warehouse sizing and auto-suspend settings be evaluated for a workload mixing frequent short queries and overnight batches?",
+      "category": "Snowflake",
+      "subcategory": "Cost",
+      "skill": "Snowflake",
+      "difficulty": "hard",
+      "question_type": "scenario",
+      "tags": [
+        "cost",
+        "snowflake"
+      ],
+      "expected_topics": [
+        "Workload isolation",
+        "Credit usage",
+        "Latency",
+        "Controlled experiments"
+      ],
+      "evaluation_focus": "Explicit cost and service-level trade-offs"
+    },
+    {
+      "id": "delta-merge",
+      "version": 1,
+      "question_text": "How should a Delta table MERGE handle duplicate source keys and records arriving out of event-time order?",
+      "category": "Databricks",
+      "subcategory": "Delta Lake",
+      "skill": "Databricks",
+      "difficulty": "medium",
+      "question_type": "scenario",
+      "tags": [
+        "delta lake",
+        "databricks"
+      ],
+      "expected_topics": [
+        "Source deduplication",
+        "Merge conditions",
+        "Event time",
+        "Idempotency"
+      ],
+      "evaluation_focus": "Deterministic upserts and late-data policy"
+    },
+    {
+      "id": "delta-schema",
+      "version": 1,
+      "question_text": "A new producer changes a field from integer to string. How should a lakehouse ingestion pipeline detect and isolate the incompatible change?",
+      "category": "Databricks",
+      "subcategory": "Schema evolution",
+      "skill": "Databricks",
+      "difficulty": "hard",
+      "question_type": "debugging",
+      "tags": [
+        "schema evolution",
+        "databricks"
+      ],
+      "expected_topics": [
+        "Schema enforcement",
+        "Quarantine",
+        "Compatibility",
+        "Backfill"
+      ],
+      "evaluation_focus": "Preventing silent corruption and planning recovery"
+    },
+    {
+      "id": "aws-iam",
+      "version": 1,
+      "question_text": "Design least-privilege access for an ingestion job that reads one object prefix and writes another. How would permissions be tested?",
+      "category": "AWS",
+      "subcategory": "Access control",
+      "skill": "AWS",
+      "difficulty": "medium",
+      "question_type": "scenario",
+      "tags": [
+        "access control",
+        "aws"
+      ],
+      "expected_topics": [
+        "IAM roles",
+        "Resource scoping",
+        "Encryption permissions",
+        "Negative tests"
+      ],
+      "evaluation_focus": "Practical least privilege"
+    },
+    {
+      "id": "aws-files",
+      "version": 1,
+      "question_text": "Design object-storage ingestion that tolerates repeated notifications, partially uploaded data and late files.",
+      "category": "AWS",
+      "subcategory": "Object ingestion",
+      "skill": "AWS",
+      "difficulty": "hard",
+      "question_type": "system_design",
+      "tags": [
+        "object ingestion",
+        "aws"
+      ],
+      "expected_topics": [
+        "Idempotency",
+        "Completion markers",
+        "Metadata tracking",
+        "Reconciliation"
+      ],
+      "evaluation_focus": "Reliable processing under imperfect event delivery"
+    },
+    {
+      "id": "gcp-dataproc",
+      "version": 1,
+      "question_text": "What factors influence choosing ephemeral versus long-lived Dataproc clusters for scheduled Spark pipelines?",
+      "category": "GCP",
+      "subcategory": "Dataproc",
+      "skill": "GCP",
+      "difficulty": "medium",
+      "question_type": "scenario",
+      "tags": [
+        "dataproc",
+        "gcp"
+      ],
+      "expected_topics": [
+        "Startup latency",
+        "Isolation",
+        "Dependencies",
+        "Utilization"
+      ],
+      "evaluation_focus": "Workload-driven operational trade-offs"
+    },
+    {
+      "id": "gcp-access",
+      "version": 1,
+      "question_text": "How would service-account permissions be separated between development and production data pipelines?",
+      "category": "GCP",
+      "subcategory": "Security",
+      "skill": "GCP",
+      "difficulty": "medium",
+      "question_type": "conceptual",
+      "tags": [
+        "security",
+        "gcp"
+      ],
+      "expected_topics": [
+        "Service accounts",
+        "Least privilege",
+        "Environment boundaries",
+        "Audit logs"
+      ],
+      "evaluation_focus": "Avoiding shared credentials and excessive access"
+    },
+    {
+      "id": "bq-prune",
+      "version": 1,
+      "question_text": "A BigQuery query scans an unexpectedly large amount of data. How would partition filters and clustering be investigated?",
+      "category": "BigQuery",
+      "subcategory": "Query performance",
+      "skill": "BigQuery",
+      "difficulty": "medium",
+      "question_type": "debugging",
+      "tags": [
+        "query performance",
+        "bigquery"
+      ],
+      "expected_topics": [
+        "Bytes processed",
+        "Partition pruning",
+        "Clustering",
+        "Query plan"
+      ],
+      "evaluation_focus": "Evidence-backed cost reduction"
+    },
+    {
+      "id": "bq-model",
+      "version": 1,
+      "question_text": "When would nested and repeated fields be preferable to normalized tables for an analytical workload, and how would that decision be validated?",
+      "category": "BigQuery",
+      "subcategory": "Modeling",
+      "skill": "BigQuery",
+      "difficulty": "hard",
+      "question_type": "system_design",
+      "tags": [
+        "modeling",
+        "bigquery"
+      ],
+      "expected_topics": [
+        "Access patterns",
+        "Join costs",
+        "Repeated fields",
+        "Data evolution"
+      ],
+      "evaluation_focus": "Model choices tied to workload and maintenance"
+    },
+    {
+      "id": "kafka-basics",
+      "version": 1,
+      "question_text": "What does a Kafka partition guarantee about ordering, and how does partition-key choice affect parallelism?",
+      "category": "Kafka",
+      "subcategory": "Partitions",
+      "skill": "Kafka",
+      "difficulty": "easy",
+      "question_type": "conceptual",
+      "tags": [
+        "partitions",
+        "kafka"
+      ],
+      "expected_topics": [
+        "Partition ordering",
+        "Keys",
+        "Consumer groups",
+        "Hot partitions"
+      ],
+      "evaluation_focus": "Scope of ordering and distribution guarantees"
+    },
+    {
+      "id": "kafka-offsets",
+      "version": 1,
+      "question_text": "In a hypothetical Kafka consumer, how should offset commits relate to database writes to handle a crash between the two?",
+      "category": "Kafka",
+      "subcategory": "Delivery",
+      "skill": "Kafka",
+      "difficulty": "medium",
+      "question_type": "scenario",
+      "tags": [
+        "delivery",
+        "kafka"
+      ],
+      "expected_topics": [
+        "Offset commits",
+        "Replay",
+        "Idempotent writes",
+        "Transaction boundaries"
+      ],
+      "evaluation_focus": "End-to-end delivery semantics"
+    },
+    {
+      "id": "kafka-lag",
+      "version": 1,
+      "question_text": "Consumer lag rises after a deployment. How would broker, partition and consumer metrics be used to isolate the cause?",
+      "category": "Kafka",
+      "subcategory": "Diagnosis",
+      "skill": "Kafka",
+      "difficulty": "hard",
+      "question_type": "debugging",
+      "tags": [
+        "diagnosis",
+        "kafka"
+      ],
+      "expected_topics": [
+        "Lag by partition",
+        "Processing latency",
+        "Rebalances",
+        "Throughput"
+      ],
+      "evaluation_focus": "Systematic diagnosis without assuming a scaling fix"
+    },
+    {
+      "id": "de-backfill",
+      "version": 1,
+      "question_text": "Design a backfill that can run alongside daily ingestion without double counting or overwriting newer data.",
+      "category": "Data Engineering",
+      "subcategory": "Backfills",
+      "skill": "Data Engineering",
+      "difficulty": "hard",
+      "question_type": "system_design",
+      "tags": [
+        "backfills",
+        "data engineering"
+      ],
+      "expected_topics": [
+        "Isolation",
+        "Watermarks",
+        "Idempotent partitions",
+        "Reconciliation"
+      ],
+      "evaluation_focus": "Concurrent historical and live processing"
+    },
+    {
+      "id": "de-quality",
+      "version": 1,
+      "question_text": "Which checks should stop a pipeline versus quarantine individual records, and how should false positives be handled?",
+      "category": "Data Engineering",
+      "subcategory": "Data quality",
+      "skill": "Data Engineering",
+      "difficulty": "medium",
+      "question_type": "scenario",
+      "tags": [
+        "data quality",
+        "data engineering"
+      ],
+      "expected_topics": [
+        "Data contracts",
+        "Quarantine",
+        "Severity",
+        "Monitoring"
+      ],
+      "evaluation_focus": "Actionable quality policy and operational ownership"
+    },
+    {
+      "id": "model-scd",
+      "version": 1,
+      "question_text": "Describe the keys and update logic for a type-2 slowly changing dimension. How would late corrections be represented?",
+      "category": "Data Modeling",
+      "subcategory": "Dimensions",
+      "skill": "Data Modeling",
+      "difficulty": "medium",
+      "question_type": "coding",
+      "tags": [
+        "dimensions",
+        "data modeling"
+      ],
+      "expected_topics": [
+        "Surrogate keys",
+        "Validity intervals",
+        "Current flag",
+        "Late corrections"
+      ],
+      "evaluation_focus": "Temporal consistency and non-overlapping versions"
+    },
+    {
+      "id": "system-cdc",
+      "version": 1,
+      "question_text": "Design a change-data-capture pipeline from a transactional database to an analytical store, including initial snapshot and recovery.",
+      "category": "System Design",
+      "subcategory": "CDC",
+      "skill": "System Design",
+      "difficulty": "hard",
+      "question_type": "system_design",
+      "tags": [
+        "cdc",
+        "system design"
+      ],
+      "expected_topics": [
+        "Snapshot boundary",
+        "Change ordering",
+        "Schema changes",
+        "Replay"
+      ],
+      "evaluation_focus": "Explicit consistency boundaries and recoverability"
+    },
+    {
+      "id": "cicd-data",
+      "version": 1,
+      "question_text": "What should a CI pipeline validate before deploying a database transformation with a breaking schema change?",
+      "category": "CI/CD",
+      "subcategory": "Delivery",
+      "skill": "CI/CD",
+      "difficulty": "medium",
+      "question_type": "scenario",
+      "tags": [
+        "delivery",
+        "ci/cd"
+      ],
+      "expected_topics": [
+        "Contract tests",
+        "Migration order",
+        "Rollback",
+        "Representative fixtures"
+      ],
+      "evaluation_focus": "Safe releases beyond syntax checks"
+    },
+    {
+      "id": "devops-secrets",
+      "version": 1,
+      "question_text": "How should a data pipeline receive credentials in local development and deployed environments without committing secrets?",
+      "category": "DevOps",
+      "subcategory": "Configuration",
+      "skill": "DevOps",
+      "difficulty": "easy",
+      "question_type": "conceptual",
+      "tags": [
+        "configuration",
+        "devops"
+      ],
+      "expected_topics": [
+        "Environment configuration",
+        "Secret storage",
+        "Rotation",
+        "Log redaction"
+      ],
+      "evaluation_focus": "Separation of code and credentials"
+    },
+    {
+      "id": "genai-eval",
+      "version": 1,
+      "question_text": "How would an evaluation set detect unsupported claims in an LLM-generated summary of data-pipeline documentation?",
+      "category": "GenAI",
+      "subcategory": "Evaluation",
+      "skill": "GenAI",
+      "difficulty": "medium",
+      "question_type": "scenario",
+      "tags": [
+        "evaluation",
+        "genai"
+      ],
+      "expected_topics": [
+        "Source evidence",
+        "Counterexamples",
+        "Structured validation",
+        "Abstention"
+      ],
+      "evaluation_focus": "Grounding and measurable failure detection"
+    },
+    {
+      "id": "agent-boundary",
+      "version": 1,
+      "question_text": "For a hypothetical tool-using assistant, which actions should require human approval and how should retries be bounded?",
+      "category": "Agentic AI",
+      "subcategory": "Control",
+      "skill": "Agentic AI",
+      "difficulty": "hard",
+      "question_type": "system_design",
+      "tags": [
+        "control",
+        "agentic ai"
+      ],
+      "expected_topics": [
+        "Tool permissions",
+        "Approval boundaries",
+        "Idempotency",
+        "Execution limits"
+      ],
+      "evaluation_focus": "Explicit control and failure containment"
+    },
+    {
+      "id": "behavior-tradeoff",
+      "version": 1,
+      "question_text": "Choose a real example, if available, of a technical disagreement. How were evidence, trade-offs and the final decision communicated?",
+      "category": "Behavioral",
+      "subcategory": "Communication",
+      "skill": "Behavioral",
+      "difficulty": "medium",
+      "question_type": "behavioral",
+      "tags": [
+        "communication",
+        "behavioral"
+      ],
+      "expected_topics": [
+        "Specific context",
+        "Alternatives",
+        "Evidence",
+        "Reflection"
+      ],
+      "evaluation_focus": "Clear reasoning without fabricated outcomes"
+    }
+  ]
+}

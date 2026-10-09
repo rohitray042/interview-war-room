@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+sqlmodel
+alembic
+pydantic-settings
+pytest
+httpx
+ruff
+pypdf
+python-docx
+python-multipart

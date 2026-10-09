@@ -1,0 +1,226 @@
+.learning {
+  font-size: 14px;
+  line-height: 1.6;
+}
+.learning button:not(.text-action) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+}
+.learning button.primary {
+  background: var(--strong);
+  color: var(--inverse);
+}
+.learning button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.learning h2 {
+  font-size: 24px;
+  margin: 10px 0;
+}
+.learning h3 {
+  font-size: 17px;
+  margin: 8px 0;
+}
+.learning p {
+  margin: 10px 0;
+  color: var(--muted);
+}
+.learning-toolbar,
+.learning-actions,
+.learning-filters,
+.learning-pagination {
+  display: flex;
+  align-items: end;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.learning-toolbar h2 {
+  margin-right: auto;
+}
+.learning-toolbar label {
+  max-width: 380px;
+}
+.learning label {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  font-size: 12px;
+}
+.learning select,
+.learning input {
+  max-width: 100%;
+  min-width: 0;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font: inherit;
+  background: var(--surface);
+  color: var(--text);
+}
+.learning-toolbar label,
+.learning-search {
+  flex: 1;
+}
+.learning-counts {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding: 24px 0;
+}
+.learning-counts strong {
+  font-size: 22px;
+  margin-right: 6px;
+}
+.learning-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 20px;
+}
+.learning .learning-tabs button {
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  background: transparent;
+}
+.learning-tabs button[aria-pressed="true"] {
+  border-bottom-color: currentColor;
+  font-weight: 600;
+}
+.learning-search {
+  position: relative;
+}
+.learning-search svg {
+  position: absolute;
+  left: 12px;
+  top: 14px;
+}
+.learning-search input {
+  padding-left: 38px;
+}
+.learning-list {
+  margin-top: 24px;
+}
+.learning-list article {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: 28px;
+  padding: 24px 0;
+  border-top: 1px solid var(--border);
+}
+.learning-list .text-action {
+  font-size: 18px;
+  text-align: left;
+  white-space: normal;
+}
+.learning-pagination {
+  justify-content: end;
+  margin: 20px 0;
+  align-items: center;
+}
+.learning-heading {
+  display: block;
+  height: auto;
+  padding: 26px 0 12px;
+  border: 0;
+  background: none;
+}
+.learning-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  padding: 16px 0;
+}
+.learning-facts span,
+.learning-facts strong {
+  display: block;
+}
+.learning-facts span {
+  font-size: 12px;
+  color: var(--muted);
+}
+.learning-facts strong {
+  font-size: 18px;
+}
+.learning-section {
+  padding: 26px 0;
+  border-top: 1px solid var(--border);
+  margin-top: 20px;
+}
+.learning-actions input {
+  width: 80px;
+}
+.learning-timeline {
+  padding-left: 22px;
+}
+.learning-timeline li {
+  padding: 10px 0 18px;
+}
+.learning-timeline span {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+}
+.learning blockquote {
+  margin: 14px 0;
+  padding: 8px 16px;
+  border-left: 2px solid var(--border);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.learning cite {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+.learning-evidence {
+  border-bottom: 1px solid var(--border);
+  padding: 18px 0;
+}
+.learning-evidence details {
+  margin-top: 10px;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+}
+.learning .text-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.learning h4,
+.learning h3,
+.learning p,
+.learning span,
+.learning button {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 650px) {
+  .learning-list article {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
+  .learning-facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .learning-toolbar label {
+    flex-basis: 100%;
+    max-width: none;
+  }
+  .learning-search {
+    flex-basis: 100%;
+  }
+  .learning-actions {
+    align-items: stretch;
+  }
+}

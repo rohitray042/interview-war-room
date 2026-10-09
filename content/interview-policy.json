@@ -1,0 +1,236 @@
+{
+  "version": 1,
+  "rubrics": {
+    "technical": {
+      "id": "interview-technical-v1",
+      "version": 1,
+      "weights": {
+        "correctness": 35,
+        "completeness": 25,
+        "depth": 20,
+        "production_reasoning": 20
+      },
+      "dimensions": {
+        "correctness": {
+          "0": "No usable evidence of technical accuracy and valid assumptions.",
+          "1": "Major gaps in technical accuracy and valid assumptions.",
+          "2": "Partial evidence of technical accuracy and valid assumptions; important gaps remain.",
+          "3": "Clear and mostly complete evidence of technical accuracy and valid assumptions.",
+          "4": "Precise, well-supported evidence of technical accuracy and valid assumptions throughout."
+        },
+        "completeness": {
+          "0": "No usable evidence of coverage of the question's expected topics.",
+          "1": "Major gaps in coverage of the question's expected topics.",
+          "2": "Partial evidence of coverage of the question's expected topics; important gaps remain.",
+          "3": "Clear and mostly complete evidence of coverage of the question's expected topics.",
+          "4": "Precise, well-supported evidence of coverage of the question's expected topics throughout."
+        },
+        "depth": {
+          "0": "No usable evidence of mechanisms and concrete examples.",
+          "1": "Major gaps in mechanisms and concrete examples.",
+          "2": "Partial evidence of mechanisms and concrete examples; important gaps remain.",
+          "3": "Clear and mostly complete evidence of mechanisms and concrete examples.",
+          "4": "Precise, well-supported evidence of mechanisms and concrete examples throughout."
+        },
+        "production_reasoning": {
+          "0": "No usable evidence of failure handling, observability and trade-offs.",
+          "1": "Major gaps in failure handling, observability and trade-offs.",
+          "2": "Partial evidence of failure handling, observability and trade-offs; important gaps remain.",
+          "3": "Clear and mostly complete evidence of failure handling, observability and trade-offs.",
+          "4": "Precise, well-supported evidence of failure handling, observability and trade-offs throughout."
+        }
+      }
+    },
+    "sql": {
+      "id": "interview-sql-v1",
+      "version": 1,
+      "weights": {
+        "correctness": 40,
+        "query_logic": 25,
+        "edge_cases": 20,
+        "performance": 15
+      },
+      "dimensions": {
+        "correctness": {
+          "0": "No usable evidence of correct result semantics.",
+          "1": "Major gaps in correct result semantics.",
+          "2": "Partial evidence of correct result semantics; important gaps remain.",
+          "3": "Clear and mostly complete evidence of correct result semantics.",
+          "4": "Precise, well-supported evidence of correct result semantics throughout."
+        },
+        "query_logic": {
+          "0": "No usable evidence of sound joins, grouping and ordering.",
+          "1": "Major gaps in sound joins, grouping and ordering.",
+          "2": "Partial evidence of sound joins, grouping and ordering; important gaps remain.",
+          "3": "Clear and mostly complete evidence of sound joins, grouping and ordering.",
+          "4": "Precise, well-supported evidence of sound joins, grouping and ordering throughout."
+        },
+        "edge_cases": {
+          "0": "No usable evidence of nulls, ties and duplicates.",
+          "1": "Major gaps in nulls, ties and duplicates.",
+          "2": "Partial evidence of nulls, ties and duplicates; important gaps remain.",
+          "3": "Clear and mostly complete evidence of nulls, ties and duplicates.",
+          "4": "Precise, well-supported evidence of nulls, ties and duplicates throughout."
+        },
+        "performance": {
+          "0": "No usable evidence of execution costs and a verification plan.",
+          "1": "Major gaps in execution costs and a verification plan.",
+          "2": "Partial evidence of execution costs and a verification plan; important gaps remain.",
+          "3": "Clear and mostly complete evidence of execution costs and a verification plan.",
+          "4": "Precise, well-supported evidence of execution costs and a verification plan throughout."
+        }
+      }
+    },
+    "system_design": {
+      "id": "interview-system_design-v1",
+      "version": 1,
+      "weights": {
+        "requirements": 15,
+        "architecture": 20,
+        "scalability": 15,
+        "reliability": 20,
+        "data_flow": 15,
+        "trade_offs": 15
+      },
+      "dimensions": {
+        "requirements": {
+          "0": "No usable evidence of explicit assumptions and workload.",
+          "1": "Major gaps in explicit assumptions and workload.",
+          "2": "Partial evidence of explicit assumptions and workload; important gaps remain.",
+          "3": "Clear and mostly complete evidence of explicit assumptions and workload.",
+          "4": "Precise, well-supported evidence of explicit assumptions and workload throughout."
+        },
+        "architecture": {
+          "0": "No usable evidence of clear components and boundaries.",
+          "1": "Major gaps in clear components and boundaries.",
+          "2": "Partial evidence of clear components and boundaries; important gaps remain.",
+          "3": "Clear and mostly complete evidence of clear components and boundaries.",
+          "4": "Precise, well-supported evidence of clear components and boundaries throughout."
+        },
+        "scalability": {
+          "0": "No usable evidence of capacity and bottlenecks.",
+          "1": "Major gaps in capacity and bottlenecks.",
+          "2": "Partial evidence of capacity and bottlenecks; important gaps remain.",
+          "3": "Clear and mostly complete evidence of capacity and bottlenecks.",
+          "4": "Precise, well-supported evidence of capacity and bottlenecks throughout."
+        },
+        "reliability": {
+          "0": "No usable evidence of failure handling and recovery.",
+          "1": "Major gaps in failure handling and recovery.",
+          "2": "Partial evidence of failure handling and recovery; important gaps remain.",
+          "3": "Clear and mostly complete evidence of failure handling and recovery.",
+          "4": "Precise, well-supported evidence of failure handling and recovery throughout."
+        },
+        "data_flow": {
+          "0": "No usable evidence of data movement and consistency.",
+          "1": "Major gaps in data movement and consistency.",
+          "2": "Partial evidence of data movement and consistency; important gaps remain.",
+          "3": "Clear and mostly complete evidence of data movement and consistency.",
+          "4": "Precise, well-supported evidence of data movement and consistency throughout."
+        },
+        "trade_offs": {
+          "0": "No usable evidence of alternatives and justified choices.",
+          "1": "Major gaps in alternatives and justified choices.",
+          "2": "Partial evidence of alternatives and justified choices; important gaps remain.",
+          "3": "Clear and mostly complete evidence of alternatives and justified choices.",
+          "4": "Precise, well-supported evidence of alternatives and justified choices throughout."
+        }
+      }
+    },
+    "behavioral": {
+      "id": "interview-behavioral-v1",
+      "version": 1,
+      "weights": {
+        "structure": 20,
+        "relevance": 20,
+        "ownership": 20,
+        "clarity": 20,
+        "outcome": 20
+      },
+      "dimensions": {
+        "structure": {
+          "0": "No usable evidence of a coherent situation, action and outcome.",
+          "1": "Major gaps in a coherent situation, action and outcome.",
+          "2": "Partial evidence of a coherent situation, action and outcome; important gaps remain.",
+          "3": "Clear and mostly complete evidence of a coherent situation, action and outcome.",
+          "4": "Precise, well-supported evidence of a coherent situation, action and outcome throughout."
+        },
+        "relevance": {
+          "0": "No usable evidence of direct relevance to the question.",
+          "1": "Major gaps in direct relevance to the question.",
+          "2": "Partial evidence of direct relevance to the question; important gaps remain.",
+          "3": "Clear and mostly complete evidence of direct relevance to the question.",
+          "4": "Precise, well-supported evidence of direct relevance to the question throughout."
+        },
+        "ownership": {
+          "0": "No usable evidence of clear distinction of individual and team actions.",
+          "1": "Major gaps in clear distinction of individual and team actions.",
+          "2": "Partial evidence of clear distinction of individual and team actions; important gaps remain.",
+          "3": "Clear and mostly complete evidence of clear distinction of individual and team actions.",
+          "4": "Precise, well-supported evidence of clear distinction of individual and team actions throughout."
+        },
+        "clarity": {
+          "0": "No usable evidence of an understandable and specific account.",
+          "1": "Major gaps in an understandable and specific account.",
+          "2": "Partial evidence of an understandable and specific account; important gaps remain.",
+          "3": "Clear and mostly complete evidence of an understandable and specific account.",
+          "4": "Precise, well-supported evidence of an understandable and specific account throughout."
+        },
+        "outcome": {
+          "0": "No usable evidence of stated outcome or reflection without requiring invented metrics.",
+          "1": "Major gaps in stated outcome or reflection without requiring invented metrics.",
+          "2": "Partial evidence of stated outcome or reflection without requiring invented metrics; important gaps remain.",
+          "3": "Clear and mostly complete evidence of stated outcome or reflection without requiring invented metrics.",
+          "4": "Precise, well-supported evidence of stated outcome or reflection without requiring invented metrics throughout."
+        }
+      }
+    }
+  },
+  "follow_up_templates": [
+    "For {skill}, explain {topic} in the approach just discussed. Give a concrete example and how it could be checked.",
+    "Still focusing on {topic} in {skill}, describe a difficult edge case, a trade-off and a way to validate the choice."
+  ],
+  "types": {
+    "technical": {
+      "excluded_types": [
+        "behavioral"
+      ],
+      "category": null,
+      "question_type": null
+    },
+    "sql": {
+      "excluded_types": [],
+      "category": "SQL",
+      "question_type": null
+    },
+    "data_engineering": {
+      "excluded_types": [
+        "behavioral"
+      ],
+      "category": null,
+      "question_type": null
+    },
+    "system_design": {
+      "excluded_types": [],
+      "category": null,
+      "question_type": "system_design"
+    },
+    "behavioral": {
+      "excluded_types": [],
+      "category": null,
+      "question_type": "behavioral"
+    },
+    "project_deep_dive": {
+      "excluded_types": [
+        "behavioral"
+      ],
+      "category": null,
+      "question_type": null
+    },
+    "mixed": {
+      "excluded_types": [],
+      "category": null,
+      "question_type": null
+    }
+  }
+}

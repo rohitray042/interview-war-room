@@ -1,0 +1,7 @@
+{
+  "id": "sql-dedup-v1", "version": 1, "topic": "SQL",
+  "difficulty": "Medium", "type": "Coding",
+  "prompt": "Given events(event_id, updated_at, ingestion_id), describe how to retain one latest row per event_id. How would you handle ties?",
+  "rubric_id": "technical-v1",
+  "expected_concepts": ["ROW_NUMBER partitioned by event_id", "Descending updated_at", "Deterministic tie-break using ingestion_id if unique", "Explicit null and tie assumptions"]
+}

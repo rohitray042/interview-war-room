@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "topics": {
+    "SQL": ["Joins and cardinality", "Window functions and deduplication", "Query plans and null semantics"],
+    "Apache Spark": ["Stages and shuffle", "Partitioning and data skew", "Executor memory and job metrics"],
+    "PySpark": ["DataFrame transformations", "Execution plans and shuffles", "Python UDF trade-offs"],
+    "Snowflake": ["Architecture and warehouse sizing", "Query profiles and pruning", "Streams, tasks, and recovery"],
+    "Python": ["Collections and iteration", "Exception handling and testing", "Maintainable data transformations"],
+    "Java": ["Collections and memory", "Exception handling", "Spark application design"],
+    "Kafka": ["Partitions and consumer groups", "Offsets and delivery semantics", "Consumer lag and replay"],
+    "GCP": ["Storage and compute choices", "Dataproc job troubleshooting", "IAM and operational costs"],
+    "Dataproc": ["Cluster sizing", "Job diagnostics", "Autoscaling trade-offs"],
+    "AWS": ["Storage and compute choices", "IAM and least privilege", "Reliability and cost trade-offs"],
+    "Databricks": ["Lakehouse concepts", "Delta table operations", "Job reliability and optimization"],
+    "Cassandra": ["Partition-key design", "Consistency levels", "Write latency and hot partitions"],
+    "ETL": ["Idempotency and backfills", "Data quality checks", "Schema evolution and recovery"],
+    "System design": ["Requirements and scale", "Failure handling", "Storage and processing trade-offs"],
+    "Data modeling": ["Grain and keys", "Dimensional modeling", "History and schema evolution"]
+  }
+}

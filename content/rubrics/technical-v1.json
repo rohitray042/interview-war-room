@@ -1,0 +1,11 @@
+{
+  "id": "technical-v1",
+  "version": 1,
+  "weights": {"accuracy": 40, "depth": 30, "reasoning": 20, "clarity": 10},
+  "dimensions": {
+    "accuracy": {"0": "No correct relevant concepts", "1": "Major misconceptions", "2": "Partly correct with material gaps", "3": "Correct core explanation with minor omissions", "4": "Correct and precise throughout"},
+    "depth": {"0": "No explanation", "1": "Names concepts without explaining them", "2": "Explains some mechanisms", "3": "Explains mechanisms and a concrete example", "4": "Explains mechanisms, limitations, and operational implications"},
+    "reasoning": {"0": "No reasoning", "1": "Unsupported choice", "2": "Some justification", "3": "Justifies choices and considers alternatives", "4": "Explicit assumptions, trade-offs, and verification strategy"},
+    "clarity": {"0": "Cannot interpret the answer", "1": "Difficult to follow", "2": "Understandable but disorganized", "3": "Clear and logically ordered", "4": "Concise, structured, and precise; minor grammar errors do not reduce this score"}
+  }
+}
