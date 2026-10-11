@@ -130,9 +130,13 @@ def create_app(
     async def local_requests(request: Request, call_next):
         gateway = request.url.path == "/api/v1/device"
         password = settings.access_password.get_secret_value()
+        if request.url.path == "/auth/login" and request.method == "GET":
+            return login_page(failed=request.query_params.get("error") == "password")
         if request.url.path == "/auth/login" and request.method == "POST":
             if request.headers.get("origin") not in origins:
-                return JSONResponse(status_code=403, content={"detail": "Invalid login origin."})
+                return RedirectResponse(
+                    "/auth/login", status_code=303, headers={"Cache-Control": "no-store"}
+                )
             body = b""
             async for chunk in request.stream():
                 body += chunk
@@ -142,7 +146,11 @@ def create_app(
                     )
             supplied = parse_qs(body.decode("utf-8", errors="replace")).get("password", [""])[0]
             if not password or not hmac.compare_digest(supplied.encode(), password.encode()):
-                return login_page(failed=True)
+                return RedirectResponse(
+                    "/auth/login?error=password",
+                    status_code=303,
+                    headers={"Cache-Control": "no-store"},
+                )
             response = RedirectResponse("/", status_code=303)
             response.set_cookie(
                 COOKIE,

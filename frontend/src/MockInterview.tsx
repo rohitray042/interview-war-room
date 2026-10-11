@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { request } from "./api";
 import "./interview.css";
+import VoiceAnswer from "./VoiceAnswer";
 
 type Evidence = { start: number; end: number; quote: string };
 type Rating = { dimension: string; score: number; evidence: Evidence[] };
@@ -177,6 +178,7 @@ function Feedback({ value }: { value: Evaluation }) {
 }
 
 export default function MockInterview() {
+  const [capturing, setCapturing] = useState(false);
   const [sessions, setSessions] = useState<SessionCard[]>([]),
     [targets, setTargets] = useState<Target[]>([]),
     [categories, setCategories] = useState<string[]>([]);
@@ -815,9 +817,17 @@ export default function MockInterview() {
                       <form
                         onSubmit={(e) => {
                           e.preventDefault();
-                          void run(answer);
+                          if (!capturing) void run(answer);
                         }}
                       >
+                        <VoiceAnswer
+                          key={turn.id}
+                          question={turn.question_text}
+                          value={draft}
+                          onChange={setDraft}
+                          disabled={busy}
+                          onCapture={setCapturing}
+                        />
                         <label className="answer-label">
                           Your answer
                           <textarea
@@ -826,7 +836,7 @@ export default function MockInterview() {
                             maxLength={20000}
                             rows={10}
                             value={draft}
-                            disabled={busy}
+                            disabled={busy || capturing}
                             onChange={(e) => setDraft(e.target.value)}
                           />
                         </label>
@@ -846,7 +856,7 @@ export default function MockInterview() {
                           </button>
                           <button
                             className="primary"
-                            disabled={busy || !draft.trim()}
+                            disabled={busy || capturing || !draft.trim()}
                           >
                             {busy ? "Saving answer..." : "Submit answer"}
                             <Send size={16} />

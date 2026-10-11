@@ -23,6 +23,31 @@ test("JD interview, persisted answers, two bounded follow-ups, completion and we
   });
   const targetId = (await target.json()).id;
   const errors: string[] = [];
+  await page.addInitScript(() => {
+    class FakeRecognition {
+      onresult: ((e: unknown) => void) | null = null;
+      onend: (() => void) | null = null;
+      start() {
+        this.onresult?.({
+          results: [
+            {
+              isFinal: true,
+              0: { transcript: "Use partition keys and idempotent writes." },
+            },
+          ],
+        });
+      }
+      stop() {
+        this.onend?.();
+      }
+      abort() {
+        this.onend?.();
+      }
+    }
+    Object.defineProperty(window, "SpeechRecognition", {
+      value: FakeRecognition,
+    });
+  });
   page.on("pageerror", (e) => errors.push(e.message));
   await page.goto("/");
   await page
@@ -49,6 +74,23 @@ test("JD interview, persisted answers, two bounded follow-ups, completion and we
     fullPage: true,
   });
   for (let depth = 0; depth < 3; depth++) {
+    if (depth === 0) {
+      await expect(
+        page.getByRole("button", { name: "Start microphone" }),
+      ).toBeDisabled();
+      await page.getByLabel(/Allow browser speech processing/).check();
+      await page.getByRole("button", { name: "Start microphone" }).click();
+      await expect(page.getByLabel("Your answer", { exact: true })).toHaveValue(
+        "Use partition keys and idempotent writes.",
+      );
+      await expect(
+        page.getByRole("button", { name: "Submit answer", exact: true }),
+      ).toBeDisabled();
+      await page.getByRole("button", { name: "Stop microphone" }).click();
+      await expect(
+        page.getByLabel("Your answer", { exact: true }),
+      ).toBeEnabled();
+    }
     await page
       .getByLabel("Your answer", { exact: true })
       .fill(

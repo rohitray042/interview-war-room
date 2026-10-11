@@ -87,13 +87,23 @@ def test_malformed_access_credentials_fail_closed():
 def test_browser_login_cookie_and_rejected_credentials():
     with TestClient(create_app(hosted()), base_url="https://practice.example.com") as client:
         headers = {"origin": "https://practice.example.com"}
-        assert client.post("/auth/login", data={"password": PASSWORD}).status_code == 403
+        denied = client.post("/auth/login", data={"password": PASSWORD}, follow_redirects=False)
+        assert denied.status_code == 303
+        assert denied.headers["location"] == "/auth/login"
+        assert client.get("/api/v1/storage").status_code == 401
         wrong = client.post("/auth/login", data={"password": "wrong"}, headers=headers)
         assert wrong.status_code == 401 and "Incorrect password" in wrong.text
+        assert wrong.request.method == "GET"
+        assert wrong.history[0].status_code == 303
+        refreshed = client.get(str(wrong.url))
+        assert 'type="password"' in refreshed.text
+        assert 'value="wrong"' not in refreshed.text
+        assert client.get("/auth/login").status_code == 200
         response = client.post(
             "/auth/login", data={"password": PASSWORD}, headers=headers, follow_redirects=False
         )
         assert response.status_code == 303
+        assert response.headers["location"] == "/"
         cookie = response.headers["set-cookie"]
         assert "HttpOnly" in cookie and "Secure" in cookie and "SameSite=strict" in cookie
         assert PASSWORD not in cookie
