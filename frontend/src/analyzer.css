@@ -269,6 +269,17 @@
 .source-claim p {
   font-size: 11px;
 }
+.claim-list {
+  max-height: 480px;
+  max-height: min(480px, 55dvh);
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  border-block: 1px solid var(--border);
+}
+.claim-list:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
 .review-actions {
   display: flex;
   gap: 10px;

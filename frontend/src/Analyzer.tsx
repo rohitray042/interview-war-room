@@ -509,7 +509,7 @@ export default function Analyzer() {
                 </button>
               )}
             </div>
-            <div className="claim-list">
+            <div className="claim-list" role="region" aria-label={`Extracted ${kind === "resume" ? "resume" : "JD"} details`} tabIndex={0}>
               {analysis.claims
                 .filter((c) => group === "all" || c.category === group)
                 .map((claim, index) => (
