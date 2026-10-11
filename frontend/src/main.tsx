@@ -663,9 +663,13 @@ function App() {
           <footer>
             <span>
               <ShieldCheck size={13} />
-              Private workspace · Milestone 5
+              Your practice. Your progress.
             </span>
-            <span>Consistency compounds.</span>
+            <span className="creator-credit">
+              Designed &amp; built by{" "}
+              <a href="https://github.com/rohitray042" target="_blank" rel="noopener noreferrer">Rohit</a>
+              {" with "}<span role="img" aria-label="love">❤️</span>
+            </span>
           </footer>
         </div>
       </main>

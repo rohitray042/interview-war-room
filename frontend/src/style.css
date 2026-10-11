@@ -593,6 +593,15 @@ footer > span:first-child {
   gap: 7px;
   align-items: center;
 }
+.creator-credit {
+  line-height: 1.7;
+}
+.creator-credit a {
+  color: var(--text);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 .error {
   display: flex;
   justify-content: space-between;
