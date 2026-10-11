@@ -19,6 +19,7 @@ class Settings(BaseSettings):
         default="", validation_alias=AliasChoices("WAR_ROOM_PUBLIC_URL", "RENDER_EXTERNAL_URL")
     )
     access_password: SecretStr = SecretStr("")
+    public_access: bool = False
     llm_provider: Literal["disabled", "gemini", "openai"] = Field(
         default="gemini", validation_alias=AliasChoices("LLM_PROVIDER", "WAR_ROOM_LLM_PROVIDER")
     )
@@ -31,6 +32,8 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def public_configuration(self):
+        if self.public_access and self.storage_mode != "browser":
+            raise ValueError("Public access requires browser storage")
         if self.public_url:
             parsed = urlsplit(self.public_url)
             if (
@@ -46,7 +49,7 @@ class Settings(BaseSettings):
             self.public_url = self.public_url.rstrip("/")
             if self.storage_mode != "browser":
                 raise ValueError("Public hosting requires browser storage")
-            if len(self.access_password.get_secret_value()) < 16:
+            if not self.public_access and len(self.access_password.get_secret_value()) < 16:
                 raise ValueError(
                     "Public hosting requires an access password of at least 16 characters"
                 )

@@ -36,17 +36,17 @@ and reuse it instead of repeating initialization.
 4. Enter your configured `GEMINI_MODEL` and `GEMINI_API_KEY` in Render's environment
    fields. The `.env` file on your laptop is not deployed. Do not put the key in GitHub.
 5. Deploy and wait for **Live**. Open the service's assigned HTTPS URL on your phone.
-6. The root URL shows a login page. Enter the generated `WAR_ROOM_ACCESS_PASSWORD`
-   from the service's Environment settings. Login lasts 24 hours in a secure,
-   HttpOnly cookie. Keep the password private. Basic authentication with username
-   **warroom** remains supported for API clients.
+6. Set `WAR_ROOM_PUBLIC_ACCESS=true` in Environment for existing services. The
+   blueprint sets this for new deployments. The root URL opens without login;
+   an existing `WAR_ROOM_ACCESS_PASSWORD` is ignored in public mode.
 
 Render provides `RENDER_EXTERNAL_URL`; the app uses it to allow the correct hostname
 and origin. For another host, set `WAR_ROOM_PUBLIC_URL=https://your-hostname` and
-`WAR_ROOM_ACCESS_PASSWORD` to a strong random value of at least 16 characters.
-Public hosting refuses legacy server-database mode and missing/short passwords.
-The shared password gates use of the service/API quota; it is not a user account.
-Each browser still owns its own data even if several people know the password.
+`WAR_ROOM_PUBLIC_ACCESS=true`. Public hosting refuses legacy server-database mode.
+For restricted access, set `WAR_ROOM_PUBLIC_ACCESS=false` and set
+`WAR_ROOM_ACCESS_PASSWORD` to a random value of at least 16 characters.
+Each browser owns its own data in either mode. Public visitors share the configured
+AI quota; application-level abuse throttling is not yet implemented.
 
 ## Phone and desktop data
 
@@ -63,8 +63,8 @@ Keep browser backups: clearing site data or private browsing can still remove it
 ## Verify the deployment
 
 - Check `/api/v1/health` returns `status: ok`.
-- Open the root URL: the access-password prompt should appear before the app.
-- After signing in, `/api/v1/storage` should return `mode: browser`.
+- Open the root URL in a fresh browser: the app should appear without a login prompt.
+- `/api/v1/storage` should return `mode: browser` without authentication.
 - Save a profile, refresh, upload a resume and test one short AI evaluation.
 - Open a separate browser profile/device and verify its workspace starts empty.
 - Never put the Gemini key in the frontend or an environment variable prefixed `VITE_`.

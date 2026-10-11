@@ -129,7 +129,9 @@ def create_app(
     @app.middleware("http")
     async def local_requests(request: Request, call_next):
         gateway = request.url.path == "/api/v1/device"
-        password = settings.access_password.get_secret_value()
+        password = "" if settings.public_access else settings.access_password.get_secret_value()
+        if settings.public_access and request.url.path == "/auth/login":
+            return RedirectResponse("/", status_code=303, headers={"Cache-Control": "no-store"})
         if request.url.path == "/auth/login" and request.method == "GET":
             return login_page(failed=request.query_params.get("error") == "password")
         if request.url.path == "/auth/login" and request.method == "POST":
@@ -166,7 +168,7 @@ def create_app(
         if device_engine.get() is None and request.url.path != "/api/v1/health":
             if not authorized(
                 request.headers.get("authorization", ""),
-                settings.access_password.get_secret_value(),
+                password,
             ) and not valid_session(request.cookies.get(COOKIE), password):
                 if request.method == "GET" and request.url.path == "/":
                     return login_page()

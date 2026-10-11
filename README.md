@@ -13,6 +13,9 @@ A personal Data Engineering interview preparation workspace. React + TypeScript,
 ## What works
 
 - Responsive dashboard shell with light/dark themes and honest empty states.
+- Mobile-friendly navigation, wrapped connection indicators, touch-sized controls and single-column interview forms on phones.
+- Public hosted access without login; optional password protection with a 24-hour secure HttpOnly cookie.
+- Voice-assisted interviews: question playback, microphone transcription, editable answers and the existing AI evaluation flow.
 - Browser-owned profiles, resumes, JD comparisons and interview history, with backup/restore and device-data deletion.
 - Three versioned sample questions (SQL, Spark, Snowflake) and one anchored technical rubric, validated at startup.
 - Health/capabilities/content-manifest APIs, strict input validation, and privacy-conscious logging.
@@ -37,18 +40,41 @@ asked one question at a time. Refresh resumes the saved set rather than generati
 
 After each answer, AI evaluates its evidence and can select a weak topic for up to two
 follow-ups. Follow-up wording uses the existing versioned templates. Primary questions
-are not dynamically regenerated after each answer; this remains a text interview, without
-voice processing. Failed/invalid generation creates no partial session or fake questions.
+are not dynamically regenerated after each answer. Candidates can type or dictate their
+answers using browser speech recognition. Failed/invalid generation creates no partial
+session or fake questions.
 
 1. Open **Mock interview**, choose a type, optional confirmed resume/JD comparison, category, difficulty, question count and source.
 2. Create and start the session. The interview screen shows the current question. The browser-owned backup contains the full session and rubrics; this is a practice tool, not a secure exam.
-3. Submit a text answer. Browser storage commits it before evaluation starts. Retrying submission cannot create a second answer.
+3. Type an answer or use the microphone controls below. Review the transcript and submit. Browser storage commits it before evaluation starts. Retrying submission cannot create a second answer in the saved session.
 4. Review the answer-specific feedback and evidence. Continue through at most two follow-ups per primary question, then the next primary question.
 5. Pause/resume or refresh using the session link. Complete the interview to see stored scores, review questions and suggested practice; **Weaknesses** links assessments to their answers.
 
 Without an LLM, curated interviews and answer persistence still work. Retry evaluation after configuring a provider, or explicitly continue unscored. Unscored answers never become fabricated scores or weaknesses. Completed sessions are immutable, including deferred evaluations. Unsubmitted drafts are only held in browser memory; submit before leaving. There is no duration timer.
 
 Interview evaluation uses the same optional provider configuration as Question Bank generation. External evaluation requires consent and sends the current question, rubric, answer and selected source context, not the entire database. Exact answer quotations are validated, but do not prove the model's judgment is correct. These scores assess individual answers, not interview readiness.
+
+### Voice interview controls
+
+1. Start an interview and press **Read question** to hear the current question through browser speech synthesis. **Stop audio** stops playback.
+2. Select **English (India)**, **English (US)** or **Hindi** as the speech language.
+3. Enable the separate browser speech-processing consent, then press **Start microphone** and allow microphone access.
+4. Speak your answer. Final transcript segments populate the answer field; interim speech appears separately. Press **Stop microphone**, review or edit the text, then **Submit answer**.
+5. The submitted transcript follows the existing AI scoring, evidence validation, feedback and bounded follow-up flow. Voice controls are available again on the next unanswered question.
+
+Submitting and editing are disabled while capturing speech. Starting the microphone stops question playback. Capture stops when the page is hidden, the component is closed, or a five-minute capture limit is reached. Permission, input-device, network and unsupported-language errors provide retry guidance; typed answers remain available when speech recognition is unsupported.
+
+Speech recognition and question playback use browser services, not Gemini audio APIs. Browser support and transcription quality vary; use HTTPS or localhost and a full browser rather than an embedded editor preview. The browser may send audio to its own speech service, subject to that service's policies. The application does not store audio recordings; submitted transcript text is stored with the answer. Unsubmitted transcripts are drafts and can be lost when leaving or refreshing.
+
+This is a voice-assisted workflow with explicit playback, recording and submission controls, not a hands-free conversation. Evaluation assesses transcript content, not pronunciation, tone or speaking confidence. Automated voice checks use a mocked recognizer; real microphone permissions, playback and transcription still need manual device testing.
+
+### Hosted login and connection status
+
+The Render blueprint enables `WAR_ROOM_PUBLIC_ACCESS=true`: the root URL opens the app without login, even if an old access-password variable remains configured. Each browser keeps its own workspace. Existing Render services must set this environment variable and deploy the updated code. Shared Gemini quota is available to visitors; application-level abuse throttling is not yet implemented.
+
+For optional password protection, set `WAR_ROOM_PUBLIC_ACCESS=false` and configure `WAR_ROOM_ACCESS_PASSWORD` (at least 16 characters). Successful login redirects home; failed login redirects to a fresh password form. Direct personal `/api/` routes are not workspace pages. See [deployment instructions](docs/DEPLOYMENT.md).
+
+The header hides provider/model names. A green dot and **AI Connected** represent either a configured, unverified provider or a successful provider response. A red dot and **AI Disconnected** represent disabled, unavailable or mock status. The green indicator alone does not verify a successful live AI call; generation or evaluation must succeed to confirm that.
 
 ## Question Bank workflow
 
@@ -98,7 +124,7 @@ npm ci
 npm run dev
 ```
 
-Open http://127.0.0.1:5174. Ports 5174 and 8001 must be free. Use the same hostname and port to access your saved browser data: `localhost` and `127.0.0.1` are different storage origins. Both servers bind to loopback; public hosting is not configured. Browser mode blocks direct access to personal REST endpoints and `/docs`; the frontend uses the stateless device gateway. Stop a server with Ctrl+C.
+Open http://127.0.0.1:5174. Ports 5174 and 8001 must be free. Use the same hostname and port to access your saved browser data: `localhost` and `127.0.0.1` are different storage origins. These development commands bind to loopback; use the Render deployment instructions for public HTTPS access. Browser mode blocks direct access to personal REST endpoints and `/docs`; the frontend uses the stateless device gateway. Stop a server with Ctrl+C.
 
 ## Configuration and data
 

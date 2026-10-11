@@ -125,3 +125,41 @@ def test_expired_session_and_password_rotation():
     assert not valid_session(session_token(PASSWORD, 1), PASSWORD)
     assert not valid_session(session_token(PASSWORD), "changed-password")
     assert not valid_session("bad", PASSWORD)
+
+
+def test_public_access_opens_app_and_keeps_workspace_boundaries(tmp_path, monkeypatch):
+    frontend = tmp_path / "frontend/dist"
+    frontend.mkdir(parents=True)
+    (frontend / "index.html").write_text("<html>Public workspace</html>")
+    monkeypatch.setattr("app.hosting.ROOT", tmp_path)
+    with TestClient(
+        create_app(hosted(public_access=True, serve_frontend=True)),
+        base_url="https://practice.example.com",
+    ) as client:
+        home = client.get("/")
+        assert home.status_code == 200 and "Public workspace" in home.text
+        assert "www-authenticate" not in home.headers
+        assert client.get("/api/v1/storage").status_code == 200
+        assert client.get("/api/v1/documents").status_code == 403
+        for method in (client.get, client.post):
+            login = method("/auth/login", follow_redirects=False)
+            assert login.status_code == 303 and login.headers["location"] == "/"
+        assert (
+            client.post(
+                "/api/v1/device",
+                json={"path": "/api/v1/profile"},
+                headers={"origin": "https://practice.example.com"},
+            ).json()["result"]["name"]
+            == ""
+        )
+        assert (
+            client.post(
+                "/api/v1/device",
+                json={"path": "/api/v1/profile"},
+                headers={"origin": "https://evil.example"},
+            ).status_code
+            == 403
+        )
+    Settings(public_url="https://practice.example.com", public_access=True, _env_file=None)
+    with pytest.raises(ValidationError):
+        Settings(public_access=True, storage_mode="local_sqlite", _env_file=None)
