@@ -212,6 +212,47 @@ header {
 .breadcrumbs span {
   color: var(--text);
 }
+.account-navigation {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.account-navigation button {
+  min-height: 40px;
+  white-space: nowrap;
+}
+.account-navigation .account-entry {
+  border-radius: 6px;
+  padding: 10px 16px;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+.account-entry svg {
+  transition: transform 160ms ease;
+}
+@media (hover: hover) {
+  .account-entry:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgb(0 0 0 / 14%);
+  }
+  .account-entry:hover svg {
+    transform: translateX(2px);
+  }
+}
+.account-entry:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+.account-entry:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .account-navigation .account-entry,
+  .account-entry svg {
+    transition: none;
+    transform: none;
+  }
+}
 .header-actions {
   min-width: 0;
   margin-left: auto;
@@ -857,6 +898,11 @@ label small {
   .header-actions .icon-button {
     width: 44px;
     height: 44px;
+  }
+  .header-actions .account-navigation {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-content: flex-end;
   }
   .connection {
     font-size: 10px;

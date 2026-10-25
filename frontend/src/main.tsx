@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { request, type Profile, type Manifest } from "./api";
 import "./style.css";
+import "./polish.css";
 import Analyzer from "./Analyzer";
 import QuestionBank from "./QuestionBank";
 import MockInterview from "./MockInterview";
@@ -27,6 +28,7 @@ import Learning from "./Learning";
 import AIStatus from "./AIStatus";
 import DevicePrivacy from "./DevicePrivacy";
 import AccountPanel from "./AccountPanel";
+import AccountNavigation from "./AccountNavigation";
 import { watchAccount } from "./cloudAccount";
 
 const navigation = [
@@ -47,6 +49,7 @@ const skills = [
   "CI/CD",
 ];
 function App() {
+  const [accountMode, setAccountMode] = useState<"login" | "signup">("login");
   useEffect(watchAccount, []);
   const [routeHash, setRouteHash] = useState(location.hash);
   const [workspace, setWorkspace] = useState<{
@@ -258,6 +261,11 @@ function App() {
           </div>
           <div className="header-actions">
             <AIStatus />
+            <AccountNavigation open={(mode) => {
+              setAccountMode(mode);
+              setPage("Profile");
+              window.scrollTo({ top: 0 });
+            }} />
             <span className={"connection " + (error ? "offline" : "")}>
               <i />
               {loading
@@ -331,7 +339,7 @@ function App() {
               <button onClick={() => void load()}>Reconnect</button>
             </div>
           )}
-          {page === "Profile" && <AccountPanel />}
+          {page === "Profile" && <AccountPanel initialMode={accountMode} />}
           <DevicePrivacy
             controls={page === "Profile"}
             onAccount={() => setPage("Profile")}

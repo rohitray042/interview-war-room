@@ -10,7 +10,7 @@ inside the Render container and no service-role key in the application.
 1. Create a Supabase project. Run `supabase/migrations/0001_accounts.sql` in its SQL
    Editor once. This is a separate cloud migration, not an Alembic migration.
 2. Enable Email authentication and **Confirm email**. Require passwords of at least
-   12 characters. Configure your site's HTTPS URL in Auth settings.
+   8 characters. Configure your site's HTTPS URL in Auth settings.
 3. In both **Confirm signup** and **Reset password** email templates, include
    `Your verification code: {{ .Token }}`. This app uses typed email codes, not
    URL fragments containing tokens. Configure SMTP appropriate for your users and
@@ -33,6 +33,12 @@ inside the Render container and no service-role key in the application.
 
 Without the two Supabase variables, the app stays in guest mode and the account
 panel reports that cloud accounts are not configured. No automatic cloud upload occurs.
+
+The ignored local `.env` is not deployed to Render. For an existing Render service,
+add both Supabase variables under Environment and select Save, rebuild, and deploy.
+Blueprint `sync: false` entries prompt during initial setup; they do not populate an
+existing service automatically. Verify `/api/v1/cloud/session` returns `enabled: true`
+after deployment. Never add a service-role key or Gmail password to these variables.
 
 ## Privacy and isolation
 

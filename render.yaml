@@ -6,6 +6,10 @@ services:
     dockerfilePath: ./Dockerfile
     healthCheckPath: /api/v1/health
     envVars:
+      - key: WAR_ROOM_SUPABASE_URL
+        sync: false
+      - key: WAR_ROOM_SUPABASE_ANON_KEY
+        sync: false
       - key: WAR_ROOM_STORAGE_MODE
         value: browser
       - key: WAR_ROOM_SERVE_FRONTEND

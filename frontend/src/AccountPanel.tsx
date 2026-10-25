@@ -9,9 +9,10 @@ import {
 } from "./cloudAccount";
 import { saveGuestToAccount } from "./deviceStorage";
 
-export default function AccountPanel() {
+export default function AccountPanel({ initialMode = "login" }: { initialMode?: "login" | "signup" }) {
   const [account, setAccount] = useState<AccountSession>();
-  const [mode, setMode] = useState("login");
+  const [mode, setMode] = useState<string>(initialMode);
+  useEffect(() => { setMode(initialMode); setPassword(""); setMessage(""); }, [initialMode]);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [token, setToken] = useState("");
