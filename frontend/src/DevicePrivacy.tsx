@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Download, Trash2, Upload } from "lucide-react";
 import { storageMode } from "./api";
+import { accountSession } from "./cloudAccount";
 import {
   clearWorkspace,
   exportWorkspace,
@@ -10,14 +11,24 @@ import {
 
 export default function DevicePrivacy({
   controls = false,
+  onAccount,
 }: {
   controls?: boolean;
+  onAccount?: () => void;
 }) {
   const [mode, setMode] = useState<string>();
+  const [cloud, setCloud] = useState(false);
+  const [expired, setExpired] = useState(false);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const file = useRef<HTMLInputElement>(null);
   useEffect(() => {
+    void accountSession()
+      .then((account) => {
+        setCloud(!!account.user);
+        setExpired(!!account.expired);
+      })
+      .catch(() => {});
     void storageMode()
       .then(setMode)
       .catch(() => {});
@@ -45,38 +56,65 @@ export default function DevicePrivacy({
   return (
     <section className="device-privacy" aria-label="Device privacy">
       <p>
-        <strong>Saved in this browser.</strong> Your resume, JD and interview
-        history stay in this browser's storage. Your workspace is sent to the
-        backend for temporary processing in memory, with no application database
-        saved there. Selected context goes to the AI provider only with your
-        consent.
+        {expired ? (
+          <>
+            <strong>Cloud session expired.</strong> Log in again or choose
+            Return to guest workspace in account settings.
+          </>
+        ) : cloud ? (
+          <>
+            <strong>Saved to your private account.</strong> Your resume, JD and
+            interview history are stored in cloud storage for access from your
+            other devices. Selected context goes to the AI provider with your
+            consent.
+          </>
+        ) : (
+          <>
+            <strong>Saved in this browser.</strong> Your resume, JD and
+            interview history stay in this browser's storage. Your workspace is
+            sent to the backend for temporary processing in memory, with no
+            application database saved there. Selected context goes to the AI
+            provider only with your consent.
+          </>
+        )}
       </p>
+      {!controls && onAccount && (
+        <button type="button" className="text-action" onClick={onAccount}>
+          {cloud ? "Manage account" : "Log in / Sign up to save across devices"}
+        </button>
+      )}
       {controls && (
         <>
           <p>
-            Other devices and browser profiles start empty. Anyone using this
-            same browser profile can access this workspace. Clearing site data
-            or using private browsing can remove your history. Backups contain
-            your personal data as readable text.
+            {cloud ? (
+              "Log out on shared devices. Cloud backups contain your personal data as readable text. Guest browser data is kept separate."
+            ) : (
+              <>
+                Other devices and browser profiles start empty. Anyone using
+                this same browser profile can access this workspace. Clearing
+                site data or using private browsing can remove your history.
+                Backups contain your personal data as readable text.
+              </>
+            )}
           </p>
           <div className="device-actions">
             <button
               type="button"
-              disabled={busy}
+              disabled={busy || expired}
               onClick={() => void run(exportWorkspace)}
             >
               <Download size={16} /> Export backup
             </button>
             <button
               type="button"
-              disabled={busy}
+              disabled={busy || cloud || expired}
               onClick={() => file.current?.click()}
             >
               <Upload size={16} /> Restore backup
             </button>
             <button
               type="button"
-              disabled={busy}
+              disabled={busy || cloud || expired}
               onClick={() => {
                 if (
                   confirm(

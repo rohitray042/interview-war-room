@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import {
   ArrowRight,
@@ -26,6 +26,8 @@ import MockInterview from "./MockInterview";
 import Learning from "./Learning";
 import AIStatus from "./AIStatus";
 import DevicePrivacy from "./DevicePrivacy";
+import AccountPanel from "./AccountPanel";
+import { watchAccount } from "./cloudAccount";
 
 const navigation = [
   { name: "Overview", icon: LayoutDashboard },
@@ -45,6 +47,7 @@ const skills = [
   "CI/CD",
 ];
 function App() {
+  useEffect(watchAccount, []);
   const [routeHash, setRouteHash] = useState(location.hash);
   const [workspace, setWorkspace] = useState<{
     data: "user" | "fixtures" | "persisted-copy";
@@ -113,7 +116,9 @@ function App() {
       /* Theme still works if storage is disabled. */
     }
   }, [theme]);
+  const loadVersion = useRef(0);
   async function load() {
+    const version = ++loadVersion.current;
     setLoading(true);
     setError("");
     try {
@@ -122,15 +127,17 @@ function App() {
         request<Manifest>("/content/manifest"),
         request<{ workspace: NonNullable<typeof workspace> }>("/capabilities"),
       ]);
+      if (version !== loadVersion.current) return;
       setProfile(p);
       setManifest(m);
       setWorkspace(c.workspace);
     } catch (e) {
+      if (version !== loadVersion.current) return;
       setError(
         e instanceof Error ? e.message : "Could not connect to the local API.",
       );
     } finally {
-      setLoading(false);
+      if (version === loadVersion.current) setLoading(false);
     }
   }
   useEffect(() => {
@@ -219,7 +226,7 @@ function App() {
           <div className="local-note">
             <ShieldCheck size={18} />
             <div>
-              Local by design<small>Your preparation. Your device.</small>
+              Private by choice<small>Guest or cloud workspace.</small>
             </div>
           </div>
           <button
@@ -232,7 +239,7 @@ function App() {
             }}
           >
             <Settings size={18} />
-            Profile & settings
+            Profile &amp; account
           </button>
           <div className="account">
             <span className="avatar">{profile?.name?.charAt(0) || "?"}</span>
@@ -324,7 +331,11 @@ function App() {
               <button onClick={() => void load()}>Reconnect</button>
             </div>
           )}
-          <DevicePrivacy controls={page === "Profile"} />
+          {page === "Profile" && <AccountPanel />}
+          <DevicePrivacy
+            controls={page === "Profile"}
+            onAccount={() => setPage("Profile")}
+          />
           {loading ? (
             <div className="loading" role="status">
               Connecting to your workspace...
@@ -667,8 +678,17 @@ function App() {
             </span>
             <span className="creator-credit">
               Designed &amp; built by{" "}
-              <a href="https://github.com/rohitray042" target="_blank" rel="noopener noreferrer">Rohit</a>
-              {" with "}<span role="img" aria-label="love">❤️</span>
+              <a
+                href="https://github.com/rohitray042"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Rohit
+              </a>
+              {" with "}
+              <span role="img" aria-label="love">
+                ❤️
+              </span>
             </span>
           </footer>
         </div>

@@ -1,3 +1,5 @@
+import { accountSession, cloudCall } from "./cloudAccount";
+
 export interface WorkspaceSnapshot {
   version: 1;
   schema_revision: "0005";
@@ -12,6 +14,7 @@ const DB_NAME = "interview-war-room-device";
 const STORE = "workspace";
 const LOCK = "interview-war-room-workspace";
 const MAX_BACKUP = 12 * 1024 * 1024;
+let cloudRevision: number | undefined;
 
 async function database(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
@@ -49,12 +52,14 @@ async function readWorkspace(): Promise<WorkspaceSnapshot | null> {
 
 async function writeWorkspace(
   workspace: WorkspaceSnapshot | null,
+  resetDrafts = false,
 ): Promise<void> {
   const db = await database();
   try {
     await new Promise<void>((resolve, reject) => {
       const transaction = db.transaction(STORE, "readwrite");
       const store = transaction.objectStore(STORE);
+      if (!workspace || resetDrafts) store.clear();
       if (workspace) store.put({ workspace }, "current");
       else store.delete("current");
       transaction.oncomplete = () => resolve();
@@ -140,6 +145,52 @@ export async function deviceRequest(
   init?: RequestInit,
 ): Promise<Response> {
   return withWorkspaceLock(async () => {
+    const account = await accountSession();
+    if (account.expired)
+      throw new Error(
+        "Your account session expired. Open Profile & settings to log in again. Your cloud data is safe.",
+      );
+    if (account.user) {
+      const outgoing = new Request(location.origin + "/api/v1" + path, {
+        ...init,
+        headers: {
+          ...(init?.body instanceof FormData
+            ? {}
+            : { "Content-Type": "application/json" }),
+          ...init?.headers,
+        },
+      });
+      if (cloudRevision === undefined && outgoing.method !== "GET") {
+        cloudRevision = (
+          await cloudCall<{ revision: number }>(
+            "/workspace",
+            undefined,
+            account.user.id,
+          )
+        ).revision;
+      }
+      const result = await cloudCall<{
+        status: number;
+        result: unknown;
+        revision: number;
+      }>(
+        "/operation",
+        {
+          path: "/api/v1" + path,
+          method: outgoing.method,
+          expected_revision: outgoing.method === "GET" ? null : cloudRevision,
+          body: encode(new Uint8Array(await outgoing.arrayBuffer())),
+          content_type:
+            outgoing.headers.get("content-type") || "application/json",
+        },
+        account.user.id,
+      );
+      cloudRevision = result.revision;
+      return new Response(JSON.stringify(result.result), {
+        status: result.status,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
     const current = await readWorkspace();
     const response = await exchange(path, init, current);
     // Commit before reporting success, and serialize across all tabs of this origin.
@@ -152,7 +203,16 @@ export async function deviceRequest(
 }
 
 export async function exportWorkspace(): Promise<void> {
-  const workspace = await withWorkspaceLock(readWorkspace);
+  const account = await accountSession();
+  const workspace = account.user
+    ? (
+        await cloudCall<{ workspace: WorkspaceSnapshot | null }>(
+          "/workspace",
+          undefined,
+          account.user.id,
+        )
+      ).workspace
+    : await withWorkspaceLock(readWorkspace);
   if (!workspace) throw new Error("There is no saved workspace to export yet.");
   const url = URL.createObjectURL(
     new Blob([JSON.stringify(workspace)], { type: "application/json" }),
@@ -179,11 +239,19 @@ export function watchWorkspaceReset(): () => void {
 }
 
 export async function clearWorkspace(): Promise<void> {
+  if ((await accountSession()).user)
+    throw new Error(
+      "Log out to delete guest device data. Use Delete account for cloud data.",
+    );
   await withWorkspaceLock(() => writeWorkspace(null));
   refreshTabs();
 }
 
 export async function importWorkspace(file: File): Promise<void> {
+  if ((await accountSession()).user)
+    throw new Error(
+      "Log out to restore a backup into the guest workspace, then import it into an empty account.",
+    );
   if (file.size > MAX_BACKUP)
     throw new Error("Backup exceeds the 12 MB limit.");
   let workspace: WorkspaceSnapshot;
@@ -207,7 +275,79 @@ export async function importWorkspace(file: File): Promise<void> {
       throw new Error(
         "Backup could not be validated. Your saved data is unchanged.",
       );
-    await writeWorkspace(checked.workspace);
+    await writeWorkspace(checked.workspace, true);
   });
   refreshTabs();
+}
+
+export async function saveGuestToAccount(): Promise<void> {
+  await withWorkspaceLock(async () => {
+    const account = await accountSession();
+    if (!account.user) throw new Error("Log in first.");
+    const stored = await cloudCall<{ revision: number }>(
+      "/workspace",
+      undefined,
+      account.user.id,
+    );
+    if (stored.revision !== 0)
+      throw new Error(
+        "Your account already has saved work. Guest import is only allowed into an empty account to prevent overwriting it.",
+      );
+    const workspace = await readWorkspace();
+    if (!workspace)
+      throw new Error("No guest workspace is saved in this browser.");
+    await cloudCall("/workspace", { workspace, revision: 0 }, account.user.id);
+  });
+}
+
+export async function answerDraft(
+  turn: string,
+  update?: { answer: string; revision: number },
+): Promise<{ answer: string; revision: number }> {
+  return withWorkspaceLock(async () => {
+    const account = await accountSession();
+    if (account.expired) throw new Error("Log in again to save this draft.");
+    if (account.user) {
+      if (!update)
+        return cloudCall("/draft/" + turn, undefined, account.user.id);
+      const result = await cloudCall<{ revision: number }>(
+        "/draft",
+        { turn_id: turn, ...update },
+        account.user.id,
+      );
+      return { answer: update.answer, revision: result.revision };
+    }
+    const db = await database();
+    try {
+      return await new Promise((resolve, reject) => {
+        const transaction = db.transaction(
+          STORE,
+          update ? "readwrite" : "readonly",
+        );
+        const store = transaction.objectStore(STORE);
+        const read = store.get("draft:" + turn);
+        let result = { answer: "", revision: 0 };
+        read.onsuccess = () => {
+          result = read.result || result;
+          if (update) {
+            if (update.revision !== result.revision) {
+              transaction.abort();
+              return;
+            }
+            result = { answer: update.answer, revision: result.revision + 1 };
+            store.put(result, "draft:" + turn);
+          }
+        };
+        transaction.oncomplete = () => resolve(result);
+        transaction.onabort = () =>
+          reject(
+            new Error(
+              "Draft changed in another tab or could not be saved. Copy your answer before reloading.",
+            ),
+          );
+      });
+    } finally {
+      db.close();
+    }
+  });
 }

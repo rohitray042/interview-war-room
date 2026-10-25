@@ -191,7 +191,7 @@ export default function VoiceAnswer({
               onChange={(e) => setConsent(e.target.checked)}
             />
             Allow browser speech processing. Audio may be sent to your browser's
-            speech service. This app saves only the submitted transcript.
+            speech service. This app saves transcript text, not audio recordings.
           </label>
           <button
             type="button"

@@ -98,6 +98,7 @@ async def process_operation(payload: DeviceOperation, request: Request):
         or parsed.netloc
         or parsed.fragment
         or not parsed.path.startswith("/api/v1/")
+        or parsed.path.startswith("/api/v1/cloud")
         or parsed.path.rstrip("/") in {"/api/v1/device", "/api/v1/storage"}
         or ".." in parsed.path
         or "%" in parsed.path

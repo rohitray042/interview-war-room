@@ -17,6 +17,8 @@ from sqlmodel import Session, select
 from starlette.formparsers import MultiPartParser
 
 from app.analyzer_api import router as analyzer_router
+from app.cloud import Cloud
+from app.cloud import router as cloud_router
 from app.config import Settings
 from app.content import ContentCatalog
 from app.contracts import DisabledProvider, StrictModel
@@ -113,6 +115,8 @@ def create_app(
 
     app = FastAPI(title="Interview War Room", version="0.6.0", lifespan=lifespan)
     app.state = WorkspaceState()
+    app.state.cloud = Cloud(settings)
+    app.include_router(cloud_router)
     app.include_router(analyzer_router)
     app.include_router(question_router)
     app.include_router(interview_router)
@@ -128,7 +132,11 @@ def create_app(
 
     @app.middleware("http")
     async def local_requests(request: Request, call_next):
-        gateway = request.url.path == "/api/v1/device"
+        cloud_request = request.url.path.startswith("/api/v1/cloud/")
+        gateway = request.url.path == "/api/v1/device" or cloud_request
+        if cloud_request and request.method not in {"GET", "HEAD", "OPTIONS"}:
+            if request.headers.get("origin") not in origins:
+                return JSONResponse(status_code=403, content={"detail": "Invalid request origin."})
         password = "" if settings.public_access else settings.access_password.get_secret_value()
         if settings.public_access and request.url.path == "/auth/login":
             return RedirectResponse("/", status_code=303, headers={"Cache-Control": "no-store"})
@@ -183,6 +191,7 @@ def create_app(
         if settings.storage_mode == "browser" and device_engine.get() is None:
             if (
                 request.url.path.startswith("/api/")
+                and not cloud_request
                 and request.url.path not in PUBLIC_PATHS | {"/api/v1/device"}
             ) or request.url.path in {"/docs", "/redoc", "/openapi.json"}:
                 return JSONResponse(

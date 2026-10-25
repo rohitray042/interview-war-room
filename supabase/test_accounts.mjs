@@ -1,0 +1,41 @@
+// Run with: node supabase/test_accounts.mjs /path/to/pglite/dist/index.js
+import { readFile } from "node:fs/promises";
+import assert from "node:assert/strict";
+import { pathToFileURL } from "node:url";
+const { PGlite } = await import(pathToFileURL(process.argv[2]).href);
+const db = new PGlite();
+const a = "00000000-0000-0000-0000-000000000001";
+const b = "00000000-0000-0000-0000-000000000002";
+await db.exec(`
+  create role anon; create role authenticated;
+  create schema auth;
+  create table auth.users(id uuid primary key, email_confirmed_at timestamptz);
+  create function auth.uid() returns uuid language sql stable as
+    $$ select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid $$;
+  grant usage on schema auth to authenticated, anon;
+  grant execute on function auth.uid() to authenticated, anon;
+  insert into auth.users values ('${a}', now()), ('${b}', now());
+`);
+await db.exec(await readFile(new URL("./migrations/0001_accounts.sql", import.meta.url), "utf8"));
+await db.exec(`set role authenticated; set request.jwt.claim.sub = '${a}'`);
+assert.equal((await db.query("select public.save_account_workspace('{}', 0) as revision")).rows[0].revision, 1);
+await assert.rejects(db.exec("select public.save_account_workspace('{}', 0)"), /Revision conflict/);
+await db.exec(`select public.save_account_draft('${a}', 'private answer A', 0)`);
+await assert.rejects(db.exec(`select public.save_account_draft('${a}', 'overwrite', 0)`), /Revision conflict/);
+await db.exec(`set request.jwt.claim.sub = '${b}'`);
+assert.equal((await db.query("select * from public.account_workspaces")).rows.length, 0);
+assert.equal((await db.query("select * from public.account_drafts")).rows.length, 0);
+await assert.rejects(db.exec(`insert into public.account_workspaces values ('${a}', '{}', 4, now())`), /permission denied/);
+await db.exec("select public.save_account_workspace('{}', 0)");
+await db.exec(`set request.jwt.claim.sub = '${a}'; select public.delete_own_account();`);
+assert.equal((await db.query("select * from public.account_workspaces")).rows.length, 0);
+assert.equal((await db.query("select * from public.account_drafts")).rows.length, 0);
+await assert.rejects(db.exec("select public.save_account_workspace('{}', 0)"), /Authentication required/);
+await db.exec(`set request.jwt.claim.sub = '${b}'`);
+assert.equal((await db.query("select * from public.account_workspaces")).rows.length, 1);
+await db.exec("set role anon; set request.jwt.claim.sub = ''");
+await assert.rejects(db.exec("select * from public.account_workspaces"), /permission denied/);
+await assert.rejects(db.exec("select public.save_account_workspace('{}', 0)"), /permission denied/);
+await assert.rejects(db.exec("select public.delete_own_account()"), /permission denied/);
+await db.close();
+console.log("PostgreSQL policy checks passed: isolation, CAS, draft conflicts, deletion cascade, anonymous denial.");

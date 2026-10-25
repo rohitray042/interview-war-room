@@ -4,7 +4,11 @@ import base from "./playwright.config";
 export default defineConfig({
   ...base,
   testIgnore: [],
-  testMatch: ["**/device-storage.spec.ts", "**/analyzer.spec.ts"],
+  testMatch: [
+    "**/device-storage.spec.ts",
+    "**/analyzer.spec.ts",
+    "**/accounts.spec.ts",
+  ],
   webServer: Array.isArray(base.webServer)
     ? base.webServer.map((server, index) =>
         index === 0

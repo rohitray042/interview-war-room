@@ -20,6 +20,8 @@ class Settings(BaseSettings):
     )
     access_password: SecretStr = SecretStr("")
     public_access: bool = False
+    supabase_url: str = ""
+    supabase_anon_key: SecretStr = SecretStr("")
     llm_provider: Literal["disabled", "gemini", "openai"] = Field(
         default="gemini", validation_alias=AliasChoices("LLM_PROVIDER", "WAR_ROOM_LLM_PROVIDER")
     )
@@ -32,6 +34,21 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def public_configuration(self):
+        if self.supabase_url:
+            parsed_cloud = urlsplit(self.supabase_url)
+            if (
+                parsed_cloud.scheme != "https"
+                or not parsed_cloud.hostname
+                or parsed_cloud.username
+                or parsed_cloud.password
+                or parsed_cloud.query
+                or parsed_cloud.fragment
+                or parsed_cloud.path not in {"", "/"}
+            ):
+                raise ValueError("Supabase URL must be an HTTPS origin")
+            self.supabase_url = self.supabase_url.rstrip("/")
+            if self.storage_mode != "browser":
+                raise ValueError("Cloud accounts require browser storage mode")
         if self.public_access and self.storage_mode != "browser":
             raise ValueError("Public access requires browser storage")
         if self.public_url:

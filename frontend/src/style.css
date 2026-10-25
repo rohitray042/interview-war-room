@@ -995,3 +995,44 @@ label small {
   align-items: center;
   gap: 8px;
 }
+.account-panel {
+  border-block: 1px solid var(--border);
+  padding: 24px 0;
+  margin-bottom: 28px;
+  line-height: 1.7;
+}
+.account-panel h2 {
+  font-size: 20px;
+}
+.account-panel p {
+  margin: 12px 0;
+  overflow-wrap: anywhere;
+}
+.account-panel form {
+  display: grid;
+  gap: 14px;
+  max-width: 440px;
+  margin-top: 18px;
+}
+.account-panel label {
+  display: block;
+}
+.account-panel button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+}
+.account-panel .account-consent {
+  display: flex;
+  align-items: start;
+  gap: 10px;
+}
+.account-consent input {
+  width: 18px;
+  flex-shrink: 0;
+}
+.account-panel summary {
+  cursor: pointer;
+  margin-top: 18px;
+}

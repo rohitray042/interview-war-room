@@ -12,6 +12,7 @@ import {
 import { request } from "./api";
 import "./interview.css";
 import VoiceAnswer from "./VoiceAnswer";
+import AnswerDraft from "./AnswerDraft";
 
 type Evidence = { start: number; end: number; quote: string };
 type Rating = { dimension: string; score: number; evidence: Evidence[] };
@@ -840,10 +841,16 @@ export default function MockInterview() {
                             onChange={(e) => setDraft(e.target.value)}
                           />
                         </label>
+                        <AnswerDraft
+                          key={turn.id + "-draft"}
+                          turn={turn.id}
+                          value={draft}
+                          onRestore={setDraft}
+                        />
                         <div className="answer-footer">
                           <span>
                             {draft.length} / 20,000
-                            {draft.length ? " · Unsaved draft" : ""}
+                            {draft.length ? " · Review before submitting" : ""}
                           </span>
                           <button
                             className="secondary"
