@@ -1,7 +1,28 @@
 # Interview War Room
 
-Live URL: https://interview-war-room.onrender.com/
+**Evidence-led interview practice, from resume review to your next mock interview.**
 
+[Try the app](https://interview-war-room.onrender.com/) · [Local setup](#local-setup) · [Cloud accounts](docs/ACCOUNTS.md) · [Architecture](docs/ARCHITECTURE.md)
+
+Designed and built by [Rohit Ray](https://github.com/rohitray042) as a personal project.
+
+## At a glance
+
+| Area | Capabilities |
+| --- | --- |
+| Resume and JD | PDF/DOCX/TXT import, editable extraction, source-linked comparison |
+| Question Bank | Curated questions, filters, bookmarks and AI-personalized sets |
+| Mock interviews | Fresh AI primary questions, saved answers, bounded follow-ups and evidence-linked feedback |
+| Voice assistance | Read questions aloud, dictate editable answers in supported browsers |
+| Progress | Stored evaluation summaries, topic weaknesses and targeted practice |
+| Optional accounts | Email verification, recovery, private cloud workspaces and cross-device access |
+| Guest mode | No signup required; browser-owned data with export, restore and deletion |
+| Interface | Responsive monochrome design, light/dark themes, visible account navigation and reduced-motion support |
+
+**Stack:** React, TypeScript, FastAPI, SQLModel, Alembic, SQLite application logic,
+optional Supabase Auth/PostgreSQL persistence, Gemini (primary) and OpenAI (optional).
+Docker deployment runs on Render. Cloud accounts require deployment environment and
+email-delivery configuration; guest access remains available without them.
 
 Phone/public HTTPS access: [Render deployment instructions](docs/DEPLOYMENT.md).
 
@@ -17,7 +38,7 @@ A personal Data Engineering interview preparation workspace. React + TypeScript,
 - Browser-owned profiles, resumes, JD comparisons and interview history, with backup/restore and device-data deletion.
 - Three versioned sample questions (SQL, Spark, Snowflake) and one anchored technical rubric, validated at startup.
 - Health/capabilities/content-manifest APIs, strict input validation, and privacy-conscious logging.
-- Disabled LLM provider interface and strict evaluation/evidence contracts; automated fake-provider tests.
+- Provider-agnostic live Gemini/OpenAI adapters, strict evaluation/evidence contracts and automated fake-provider tests.
 - Resume and JD uploads (PDF/DOCX/TXT) or pasted text, with structured, evidence-linked local extraction.
 - Editable reviews, source quotations and character offsets, uncertainty flags, and immutable confirmed revisions.
 - Confirmed resume/JD comparison: strong, partial, missing, and needs-revision items, plus explained priorities and suggested preparation topics.
@@ -38,8 +59,11 @@ asked one question at a time. Refresh resumes the saved set rather than generati
 
 After each answer, AI evaluates its evidence and can select a weak topic for up to two
 follow-ups. Follow-up wording uses the existing versioned templates. Primary questions
-are not dynamically regenerated after each answer; this remains a text interview, without
-voice processing. Failed/invalid generation creates no partial session or fake questions.
+are not dynamically regenerated after each answer. Optional browser speech recognition
+transcribes spoken answers, and speech synthesis reads questions aloud. Recognition
+availability depends on the browser, permissions and its speech service. Review the
+transcript before submission; evaluation uses text, not vocal tone or audio recordings.
+Failed/invalid generation creates no partial session or fake questions.
 
 1. Open **Mock interview**, choose a type, optional confirmed resume/JD comparison, category, difficulty, question count and source.
 2. Create and start the session. The interview screen shows the current question. The browser-owned backup contains the full session and rubrics; this is a practice tool, not a secure exam.
@@ -47,7 +71,7 @@ voice processing. Failed/invalid generation creates no partial session or fake q
 4. Review the answer-specific feedback and evidence. Continue through at most two follow-ups per primary question, then the next primary question.
 5. Pause/resume or refresh using the session link. Complete the interview to see stored scores, review questions and suggested practice; **Weaknesses** links assessments to their answers.
 
-Without an LLM, curated interviews and answer persistence still work. Retry evaluation after configuring a provider, or explicitly continue unscored. Unscored answers never become fabricated scores or weaknesses. Completed sessions are immutable, including deferred evaluations. Unsubmitted drafts are only held in browser memory; submit before leaving. There is no duration timer.
+Without an LLM, curated interviews and answer persistence still work. Retry evaluation after configuring a provider, or explicitly continue unscored. Unscored answers never become fabricated scores or weaknesses. Completed sessions are immutable, including deferred evaluations. Answer drafts save after a short typing pause, locally for guests or to the private account for signed-in users. Wait for **Draft saved** before leaving. There is no duration timer.
 
 Interview evaluation uses the same optional provider configuration as Question Bank generation. External evaluation requires consent and sends the current question, rubric, answer and selected source context, not the entire database. Exact answer quotations are validated, but do not prove the model's judgment is correct. These scores assess individual answers, not interview readiness.
 
@@ -80,6 +104,24 @@ Comparison only uses confirmed revisions. Strong matches require an explicit act
 
 The LLM boundary accepts strict structured output and rejects invalid quotations or unsupported values. Accepted AI items remain labeled **AI inferred** and require individual review before confirmation. A disabled provider returns 503 without replacing deterministic extraction. Live Gemini and optional OpenAI adapters are available; fake adapters are used only in tests. User correction must still resolve semantic ambiguity even when an excerpt matches exactly.
 
+## Accounts and privacy
+
+Use **Log in** in the header to access signup, email verification and password recovery.
+Passwords must contain at least eight characters. Signed-in users can access submitted
+work and saved answer drafts on another device. Reload to retrieve another device's
+latest work; revision checks reject conflicting saves rather than overwrite them.
+
+Guest data stays separate. **Import guest progress** explicitly transfers it into an
+empty cloud account and retains a local copy. Cloud access uses verified user identity,
+row-level security and HttpOnly session cookies. Account deletion and export are
+available in account settings. Cloud storage is not end-to-end encrypted.
+
+See [account setup and limitations](docs/ACCOUNTS.md). The local `.env` is ignored by Git
+and is not deployed: configure `WAR_ROOM_SUPABASE_URL` and
+`WAR_ROOM_SUPABASE_ANON_KEY` separately in Render. Use a publishable key, never a
+service-role key. AI processing requires separate consent. Browser speech services may
+process microphone audio according to their own policies; this app does not save audio.
+
 ## Local setup
 
 Tested with Python 3.14.6 and Node 26.4.0. Commands below start in `interview-war-room/`. Use two terminals. Dependencies are locked in `backend/requirements.txt` and `frontend/package-lock.json`.
@@ -99,7 +141,7 @@ npm ci
 npm run dev
 ```
 
-Open http://127.0.0.1:5174. Ports 5174 and 8001 must be free. Use the same hostname and port to access your saved browser data: `localhost` and `127.0.0.1` are different storage origins. Both servers bind to loopback; public hosting is not configured. Browser mode blocks direct access to personal REST endpoints and `/docs`; the frontend uses the stateless device gateway. Stop a server with Ctrl+C.
+Open http://127.0.0.1:5174. Ports 5174 and 8001 must be free. Use the same hostname and port to access your saved browser data: `localhost` and `127.0.0.1` are different storage origins. These development servers bind to loopback; use the Render deployment instructions for public HTTPS hosting. Browser mode blocks direct access to personal REST endpoints and `/docs`; guest operations use the stateless device gateway and account operations use authenticated cloud routes. Stop a server with Ctrl+C.
 
 ## Configuration and data
 
